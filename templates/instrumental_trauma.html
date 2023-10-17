@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Quirohelp </title>
+	
+
+</head>
+<body>
+	<div class="login22">
+		<h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 3rem;background-color: darkcyan;"><img src="{{ user_image7 }}" alt="" style="max-width:5%;" onclick="location.href='https://quirohelp.onrender.com/buscador_trauma'">  Traumatología</h2>
+		<h3 style="padding-left: 80%;font-size: 1.2rem;" onclick="location.href='https://quirohelp.onrender.com/ajustes'">AJUSTES <img src="{{ user_image6 }}" alt="" style="max-width:18%;"  ></h3>
+        <h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman';font-size: 1.6rem;">{{title}} :</h2>	
+		<form action="{{url_for('resultado_trauma')}}" method="post">
+            <br>
+            <br>
+            
+            <b style="font-size: 1.4rem;font-family: Arial, Helvetica, sans-serif;" >{{texto}}</b>
+             <br>
+			 <br>
+             {% for nid,titulo in cajas.items() %}
+			
+             <a style="font-size: 1.2rem;font-family: Arial, Helvetica, sans-serif;" href="https://quirohelp.onrender.com/resultado_trauma?link={{nid}}" >{{titulo}}</a>
+             
+             <br>
+             {% endfor %}
+				
+
+			
+				
+
+			</form>
+
+		
+			<br>
+			<br>	
+		
+	  
+	</div>
+</body>
+</html>

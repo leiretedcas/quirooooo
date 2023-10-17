@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Quirohelp </title>
+	
+
+</head>
+<body>
+	<div class="login22">
+		<h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 3rem;background-color: darkred;"><img src="{{ user_image7 }}" alt="" style="max-width:5%;" onclick="location.href='https://quirohelp.onrender.com/especialidad'">  Pdf de la casa comercial: </h2>
+		
+		<hr/>	
+		
+			<form action="{{url_for('pdf_casa_trauma')}}" method="post">
+			
+				<br>
+		
+
+			{% for titulo1,pdfs in titulos.items() %}
+            <br>
+            <strong style="font-size: 1.4rem;font-family: Arial, Helvetica, sans-serif;">{{titulo1}} :</strong>
+            <select style="font-size: 1.2rem;font-family: Arial, Helvetica, sans-serif;" id="mySelect" onchange="window.location.href=this.value;">
+                
+                <option value="">Seleccionar</option>
+				
+                {% for titulo2,url in pdfs.items() %}
+				<option  value="{{url}}" >{{titulo2}}</option>
+
+                
+
+                {% endfor %}
+
+
+            </select>
+      
+            <br>
+            <br>
+            <hr/>  
+            
+            
+			{% endfor %}
+          
+			
+
+            
+
+		
+
+			
+
+
+			
+			
+			</form>
+
+			
+
+		
+				
+		
+	    
+		
+
+
+	</div>
+</body>
+</html>

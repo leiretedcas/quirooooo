@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	
+	<title> Quirohelp </title>
+			<style>
+			
+			.quiro {
+				
+				background-color: blueviolet;
+				color:white;
+				font-size: 3.5rem;
+				
+				font-family: Georgia, 'Times New Roman', Times, serif;
+				
+
+
+
+			}
+
+			
+			
+			
+			</style>
+		
+
+</head>
+<body>
+	<div class="login2">
+		<h1 class="quiro"><img src="{{ user_image0 }}" alt="holaaa" style="max-width: 5%;" > QuiroHelp </h1>
+		
+			<p style="font-size: 1.1rem">Haz click en tu especialidad:</p>
+			<form action="{{url_for('especialidad')}}" method="post">
+				
+				
+				
+				
+				<input class=""type="button" value="Traumatologia" style="width: 78%; background-color:darkcyan;font-size: 1.5rem; " onclick="location.href='https://quirohelp.onrender.com/buscador_trauma'">
+				<h3></h3><img src="{{ user_image1 }}" alt="" style="max-width: 100%" onclick="location.href='https://quirohelp.onrender.com/buscador_trauma'">
+				<br>
+				<input type="button" value="Urologia" style="width: 78%; background-color:saddlebrown;font-size: 1.5rem;" onclick="location.href='https://quirohelp.onrender.com/buscador_uro'">
+				<h3></h3><img src="{{ user_image2 }}" alt="" style="max-width: 100%" onclick="location.href='https://quirohelp.onrender.com/buscador_uro'">
+				<br>
+				<input type="button" value="Admisión" style="width: 78%; background-color:dimgray;font-size: 1.5rem;" onclick="location.href='https://quirohelp.onrender.com/buscador_admision'">
+				<h3></h3><img src="{{ user_image3 }}" alt="" style="max-width: 100%" onclick="location.href='https://quirohelp.onrender.com/buscador_admision'">
+			</form>
+			
+	</div>
+</body>
+</html>
