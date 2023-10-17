@@ -5,895 +5,894 @@ import xlrd2 as xlrd #line:4
 import unicodedata #line:5
 import spacy #line:6
 import inflect #line:7
-#nlp =spacy .load ("es_dep_news_trf")#line:8
-nlp =spacy .load ("es_core_news_sm")#line:8
-from inflector import Inflector ,Spanish #line:9
-inflector =Inflector (Spanish )#line:10
-import speech_recognition as sr #line:11
-import os #line:12
-import requests #line:13
-from requests .auth import HTTPBasicAuth #line:14
-import asyncio #line:15
-import aiohttp #line:16
-auth =aiohttp .BasicAuth ('1234','API')#line:18
-base_url ='https://orva.tedcas.com/api/'#line:19
-async def buscar_faq (O0000O0OO000000OO ,O0OOO0OO0O00O00O0 ):#line:21
-    OO00O0O00OOO0O000 ="preguntas_qh_tags2.xlsx"#line:22
-    O00OOOO000OOO00O0 =pd .read_excel (OO00O0O00OOO0O000 ,engine ="openpyxl")#line:23
-    O00000OO00000000O =0 #line:24
-    OO0O0OOOO0OO00OO0 =O0000O0OO000000OO #line:25
-    O0000OOOO0OO00O00 =[]#line:26
-    print ("result"+str (OO0O0OOOO0OO00OO0 ))#line:27
-    for OO0O0OOOOO0O0O0O0 ,O0OOOO000O0O000O0 in O00OOOO000OOO00O0 .iterrows ():#line:28
-        OOOOO00O00OO0O0OO =O00OOOO000OOO00O0 .loc [OO0O0OOOOO0O0O0O0 ,'TAGS2']#line:29
-        OOOOO00O00OO0O0OO =OOOOO00O00OO0O0OO .split (",")#line:30
-        O0000OOOO0OO00O00 .append (OOOOO00O00OO0O0OO )#line:31
-    OOO00O0OOOO00OO00 =[]#line:32
-    OOOOO00O00OO0O0OO =[]#line:33
-    for O0O000OO00O000O00 ,O000OOO0000OOO0OO in enumerate (OO0O0OOOO0OO00OO0 ):#line:34
-        OO0O0OOOO0OO00OO0 [O0O000OO00O000O00 ]=inflector .singularize (str (O000OOO0000OOO0OO ))#line:35
-    OO00O00OO00O00OOO =np .zeros (len (O00OOOO000OOO00O0 .index ),dtype =int )#line:36
-    for OOOO00O0000000O00 ,O0OOOO000O0O000O0 in enumerate (O0000OOOO0OO00O00 ):#line:37
-        OO0OOO0O0OOOOOO0O =[]#line:38
-        for O000OOO0000OOO0OO in O0OOOO000O0O000O0 :#line:39
-            if O0OOO0OO0O00O00O0 ==0 :#line:40
-                if O000OOO0000OOO0OO !=[]:#line:41
-                    O00000OO00000000O =0 #line:42
-                    for O00O00OO0O0O0O0O0 in range (100 ):#line:43
-                        O00O00OO0O0O0O0O0 =O00O00OO0O0O0O0O0 /10 #line:44
-                        O00O00OO0O0O0O0O0 =str (O00O00OO0O0O0O0O0 )#line:45
-                        if O000OOO0000OOO0OO ==O00O00OO0O0O0O0O0 :#line:46
-                            O00O00OO0O0O0O0O0 =O00O00OO0O0O0O0O0 .split (".")#line:47
-                            OO0OOO0O0OOOOOO0O .append (O00O00OO0O0O0O0O0 [0 ])#line:48
-                            OO0OOO0O0OOOOOO0O .append ("con")#line:49
-                            OO0OOO0O0OOOOOO0O .append (O00O00OO0O0O0O0O0 [1 ])#line:50
-                            O00000OO00000000O =O00000OO00000000O +1 #line:51
-                    if O00000OO00000000O ==0 :#line:52
-                        OO0OOO0O0OOOOOO0O .append (O000OOO0000OOO0OO )#line:53
-            if O0OOO0OO0O00O00O0 ==1 :#line:54
-                OO0OOO0O0OOOOOO0O .append (O000OOO0000OOO0OO )#line:55
-        OOO00O0OOOO00OO00 .append (OO0OOO0O0OOOOOO0O )#line:56
-        for OOOO0OOOO0OO0O0OO in OO0O0OOOO0OO00OO0 :#line:57
-            for O00OOOOO0000O0000 ,O000OOO0000OOO0OO in enumerate (OOO00O0OOOO00OO00 [OOOO00O0000000O00 ]):#line:58
-                            if str (OOOO0OOOO0OO0O0OO )=="maya":#line:59
-                                OOOO0OOOO0OO0O0OO ="malla"#line:60
-                            if str (OOOO0OOOO0OO0O0OO )=="pilos"or str (OOOO0OOOO0OO0O0OO )=="pilo":#line:61
-                                OOOO0OOOO0OO0O0OO ="philo"#line:62
-                            if str (OOOO0OOOO0OO0O0OO )=="filos"or str (OOOO0OOOO0OO0O0OO )=="filo":#line:63
-                                OOOO0OOOO0OO0O0OO ="philo"#line:64
-                            if str (OOOO0OOOO0OO0O0OO )=="sinces"or str (OOOO0OOOO0OO0O0OO )=="sinc":#line:65
-                                OOOO0OOOO0OO0O0OO ="synthe"#line:66
-                            if str (OOOO0OOOO0OO0O0OO )=="sintes"or str (OOOO0OOOO0OO0O0OO )=="sint":#line:67
-                                OOOO0OOOO0OO0O0OO ="synthe"#line:68
-                            if str (OOOO0OOOO0OO0O0OO )=="axos"or str (OOOO0OOOO0OO0O0OO )=="axo":#line:69
-                                OOOO0OOOO0OO0O0OO ="axso"#line:70
-                            if str (OOOO0OOOO0OO0O0OO )=="uno":#line:71
-                                OOOO0OOOO0OO0O0OO ="1"#line:72
-                            if str (OOOO0OOOO0OO0O0OO )=="dos"or str (OOOO0OOOO0OO0O0OO )=="do":#line:73
-                                OOOO0OOOO0OO0O0OO ="2"#line:74
-                            if str (OOOO0OOOO0OO0O0OO )=="tres"or str (OOOO0OOOO0OO0O0OO )=="tr":#line:75
-                                OOOO0OOOO0OO0O0OO ="3"#line:76
-                            if str (OOOO0OOOO0OO0O0OO )=="cuatro":#line:77
-                                OOOO0OOOO0OO0O0OO ="4"#line:78
-                            if str (OOOO0OOOO0OO0O0OO )=="cinco":#line:79
-                                OOOO0OOOO0OO0O0OO ="5"#line:80
-                            if str (OOOO0OOOO0OO0O0OO )=="seis"or str (OOOO0OOOO0OO0O0OO )=="sei":#line:81
-                                OOOO0OOOO0OO0O0OO ="6"#line:82
-                            if str (OOOO0OOOO0OO0O0OO )=="siete":#line:83
-                                OOOO0OOOO0OO0O0OO ="7"#line:84
-                            if str (OOOO0OOOO0OO0O0OO )=="ocho":#line:85
-                                OOOO0OOOO0OO0O0OO ="8"#line:86
-                            if str (OOOO0OOOO0OO0O0OO )=="nueve":#line:87
-                                OOOO0OOOO0OO0O0OO ="9"#line:88
-                            if str (OOOO0OOOO0OO0O0OO )=="cero":#line:89
-                                OOOO0OOOO0OO0O0OO ="0"#line:90
-                            if str (OOOO0OOOO0OO0O0OO )=="veintiuno":#line:91
-                                OOOO0OOOO0OO0O0OO ="21"#line:92
-                            if str (OOOO0OOOO0OO0O0OO )=="veinte":#line:93
-                                OOOO0OOOO0OO0O0OO ="20"#line:94
-                            if str (OOOO0OOOO0OO0O0OO )=="veintidos"or str (OOOO0OOOO0OO0O0OO )=="veintido":#line:95
-                                OOOO0OOOO0OO0O0OO ="22"#line:96
-                            if str (OOOO0OOOO0OO0O0OO )=="veintitres"or str (OOOO0OOOO0OO0O0OO )=="veintitre":#line:97
-                                OOOO0OOOO0OO0O0OO ="23"#line:98
-                            if str (OOOO0OOOO0OO0O0OO )=="veinticuatro":#line:99
-                                OOOO0OOOO0OO0O0OO ="24"#line:100
-                            if str (OOOO0OOOO0OO0O0OO )=="veinticinco":#line:101
-                                OOOO0OOOO0OO0O0OO ="25"#line:102
-                            if str (OOOO0OOOO0OO0O0OO )=="veintiseis"or str (OOOO0OOOO0OO0O0OO )=="veintisei":#line:103
-                                OOOO0OOOO0OO0O0OO ="26"#line:104
-                            if str (OOOO0OOOO0OO0O0OO )=="veintisiete":#line:105
-                                OOOO0OOOO0OO0O0OO ="27"#line:106
-                            if str (OOOO0OOOO0OO0O0OO )=="veintiocho":#line:107
-                                OOOO0OOOO0OO0O0OO ="28"#line:108
-                            if str (OOOO0OOOO0OO0O0OO )=="veintinueve":#line:109
-                                OOOO0OOOO0OO0O0OO ="29"#line:110
-                            if str (OOOO0OOOO0OO0O0OO )=="treinta":#line:111
-                                OOOO0OOOO0OO0O0OO ="30"#line:112
-                            if str (remove_accents (O000OOO0000OOO0OO )).lower ()==str (remove_accents (OOOO0OOOO0OO0O0OO )).lower ():#line:113
-                                OO00O00OO00O00OOO [OOOO00O0000000O00 ]=OO00O00OO00O00OOO [OOOO00O0000000O00 ]+1 #line:114
-                                OOO00O0OOOO00OO00 [OOOO00O0000000O00 ].pop (O00OOOOO0000O0000 )#line:115
-        O00O00000000OOO0O =np .argwhere (OO00O00OO00O00OOO ==np .amax (OO00O00OO00O00OOO ))#line:117
-        OOOO0000OOO0OO00O =[]#line:118
-        OOO0OO000OO0O0OOO ={}#line:119
-        O00OOOO000OOO00O0 =xlrd .open_workbook (OO00O0O00OOO0O000 )#line:120
-        O00OOOO000OOO00O0 =O00OOOO000OOO00O0 .sheet_by_index (0 )#line:121
-        if not np .all (OO00O00OO00O00OOO ==0 ):#line:122
-            for O0O0OOOO00OOO0O00 in O00O00000000OOO0O :#line:123
-                OO000O0O0O000OO0O =O00OOOO000OOO00O0 .cell (int (O0O0OOOO00OOO0O00 )+1 ,3 )#line:124
-                O00O0000OO0000O0O =O00OOOO000OOO00O0 .cell (int (O0O0OOOO00OOO0O00 )+1 ,4 )#line:125
-                OO000O0O0O000OO0O =str (OO000O0O0O000OO0O )#line:126
-                O00O0000OO0000O0O =str (O00O0000OO0000O0O )#line:127
-                OO000O0O0O000OO0O =OO000O0O0O000OO0O .split ("'")#line:128
-                O00O0000OO0000O0O =O00O0000OO0000O0O .split ("'")#line:129
-                OOOO0000OOO0OO00O .append (f" {OO000O0O0O000OO0O[1]} {O00O0000OO0000O0O[1]} ")#line:130
-    return OOOO0000OOO0OO00O #line:131
-async def boton_pdf_video (OO0OO0OOO0O0O0OO0 ,OO00O00O00000OO00 ,O00OO0O000OO0OO0O ):#line:133
-    O00O0OOOOO0OO0O00 =aiohttp .TCPConnector (ssl =True )#line:134
-    async with aiohttp .ClientSession (connector =O00O0OOOOO0OO0O00 )as O0O0OOOO00O000O00 :#line:135
-        O0O00000OO0OOO000 =await O0O0OOOO00O000O00 .get (f'{base_url}all-content/{OO0OO0OOO0O0O0OO0}',auth =auth )#line:136
-        O0OOOO000000O00OO =await O0O00000OO0OOO000 .json ()#line:137
-        OO0O0000O0O0OO0OO =[]#line:139
-        OOOO0OO00O000O000 ={}#line:140
-        if O00OO0O000OO0OO0O =="0":#line:142
-            for OO00OOO000OO0000O in O0OOOO000000O00OO :#line:143
-                if OO00OOO000OO0000O ['type']=="Intervencion":#line:144
-                    OO0O0000O0O0OO0OO .append (OO00OOO000OO0000O ['nid'])#line:145
-        else :#line:146
-            OO0O0000O0O0OO0OO .append (O00OO0O000OO0OO0O )#line:147
-        for OO0OOO0000O000000 in OO0O0000O0O0OO0OO :#line:149
-            OO0O00O00O00OOO0O =await O0O0OOOO00O000O00 .get (f'{base_url}intervenciones/{OO0OOO0000O000000}',auth =auth )#line:150
-            O0OOO0OOO0O000000 =await OO0O00O00O00OOO0O .json ()#line:151
-            O0OOO0OOO0O000000 =O0OOO0OOO0O000000 [0 ]#line:152
-            O0O0OO0OOOOO0000O ={}#line:153
-            if OO00O00O00000OO00 in O0OOO0OOO0O000000 :#line:155
-                OO00000OO00OO0O0O =O0OOO0OOO0O000000 [OO00O00O00000OO00 ]#line:156
-                for OOO0OO00O0O00OOO0 in OO00000OO00OO0O0O :#line:157
-                    if OO00O00O00000OO00 =='field_pdf':#line:158
-                        O0O0OO0OOOOO0000O [OOO0OO00O0O00OOO0 ['descripcion']]="https://orva.tedcas.com/"+str (OOO0OO00O0O00OOO0 ['url'])#line:159
-                    if OO00O00O00000OO00 =='field_video':#line:160
-                        O0O0OO0OOOOO0000O [OOO0OO00O0O00OOO0 ['descripcion']]=str (OOO0OO00O0O00OOO0 ['url'])#line:161
-                OOOO0OO00O000O000 [O0OOO0OOO0O000000 ['title']]=O0O0OO0OOOOO0000O #line:163
-            else :#line:164
-                if O00OO0O000OO0OO0O =='0':#line:165
-                    O00OO0O000OO0OO0O ='0'#line:166
-                else :#line:167
-                    print ("nid dentro del if "+str (O00OO0O000OO0OO0O ))#line:168
-                    O0O0OO0OOOOO0000O ["No hay archivos"]=""#line:169
-                    OOOO0OO00O000O000 ["No hay archivos"]=O0O0OO0OOOOO0000O #line:170
-        return OOOO0OO00O000O000 #line:172
-async def boton_word_ppt (O0OOO00OOO0000O00 ,OOO0OO00O0O0OOO0O ,OO0OO0OO0O00000OO ):#line:174
-    OOOO000O0OO0OO000 =aiohttp .TCPConnector (ssl =True )#line:175
-    async with aiohttp .ClientSession (connector =OOOO000O0OO0OO000 )as OO0000000O000O00O :#line:176
-        OOOOOOO00OOO0O0OO =await OO0000000O000O00O .get (f'{base_url}all-content/{O0OOO00OOO0000O00}',auth =auth )#line:177
-        O0O0OOO0O00O0O000 =await OOOOOOO00OOO0O0OO .json ()#line:178
-        O0000OO00O000O000 =[]#line:180
-        OO0OOO0O0OOOOO0OO ={}#line:181
-        if OO0OO0OO0O00000OO =='0':#line:183
-            for OO0OOOOOOOOOO00OO in O0O0OOO0O00O0O000 :#line:184
-                if OO0OOOOOOOOOO00OO ['type']=="Intervencion":#line:185
-                    O0000OO00O000O000 .append (OO0OOOOOOOOOO00OO ['nid'])#line:186
-        else :#line:187
-            O0000OO00O000O000 .append (OO0OO0OO0O00000OO )#line:188
-        for OOO0OOO000O000OO0 in O0000OO00O000O000 :#line:190
-            O00O000OOOOOOO00O =await OO0000000O000O00O .get (f'{base_url}intervenciones/{OOO0OOO000O000OO0}',auth =auth )#line:191
-            OOO0O0OOOOOO00O00 =await O00O000OOOOOOO00O .json ()#line:192
-            OOO0O0OOOOOO00O00 =OOO0O0OOOOOO00O00 [0 ]#line:193
-            if len (OOO0O0OOOOOO00O00 [OOO0OO00O0O0OOO0O ])!=0 :#line:194
-                OO0OOO0O0OOOOO0OO [OOO0O0OOOOOO00O00 ['title']]="https://orva.tedcas.com/"+str (OOO0O0OOOOOO00O00 [OOO0OO00O0O0OOO0O ])#line:195
-            if len (OOO0O0OOOOOO00O00 [OOO0OO00O0O0OOO0O ])==0 and OO0OO0OO0O00000OO !='0':#line:196
-                OO0OOO0O0OOOOO0OO ["No hay archivos"]=""#line:197
-        return OO0OOO0O0OOOOO0OO #line:199
-async def boton_materiales (O00O000OO0O00O000 ,O00OO0OOO00O000OO ):#line:201
-    O0O0O0OOOOOOO0O0O =aiohttp .TCPConnector (ssl =True )#line:202
-    async with aiohttp .ClientSession (connector =O0O0O0OOOOOOO0O0O )as O0O0OO000O0O00O0O :#line:203
-        OOO0OO0O000O0OO00 ={}#line:204
-        if O00OO0OOO00O000OO =='0':#line:206
-            O0OO000OOO0OO0OOO =await O0O0OO000O0O00O0O .get (f'{base_url}listado_completo_cajas/{O00O000OO0O00O000}',auth =auth )#line:207
-            O00O00OO00O0000O0 =await O0OO000OOO0OO0OOO .json ()#line:208
-            for OO0OO0OOOOOO0OO00 in O00O00OO00O0000O0 :#line:209
-                OOO0OO0O000O0OO00 [OO0OO0OOOOOO0OO00 ['title']]=OO0OO0OOOOOO0OO00 ['nid']#line:210
-            OOO0OO0O000O0OO00 ['']="si hay"#line:211
-        else :#line:212
-            O0OO000OOO0OO0OOO =await O0O0OO000O0O00O0O .get (f'{base_url}intervenciones/{O00OO0OOO00O000OO}',auth =auth )#line:213
-            O00O00OO00O0000O0 =await O0OO000OOO0OO0OOO .json ()#line:214
-            O00O00OO00O0000O0 =O00O00OO00O0000O0 [0 ]#line:215
-            if 'field_cajas'in O00O00OO00O0000O0 :#line:216
-                O00O00OO00O0000O0 =O00O00OO00O0000O0 ['field_cajas']#line:217
-                for OO0OO0OOOOOO0OO00 in O00O00OO00O0000O0 :#line:218
-                    OOO0OO0O000O0OO00 [OO0OO0OOOOOO0OO00 ['caja']]=OO0OO0OOOOOO0OO00 ['id']#line:219
-                OOO0OO0O000O0OO00 ['']="si hay"#line:220
-            else :#line:221
-                if O00OO0OOO00O000OO !=0 :#line:222
-                    OOO0OO0O000O0OO00 ['']=""#line:223
-        return OOO0OO0O000O0OO00 #line:224
-async def cargar_base_datos (OOOOO0O0O0O0O0O00 ,OO00O0OO0O0O00O00 ):#line:226
-    O00O0OOOO0O0O00OO =None #line:227
-    OO0O00OO000O0O0O0 =[]#line:228
-    O000O0O00O0O0OO00 =aiohttp .TCPConnector (ssl =True )#line:229
-    async with aiohttp .ClientSession (connector =O000O0O00O0O0OO00 )as O00OO0OO00O0OO00O :#line:230
-        O0O00OOOO0000OOOO =await O00OO0OO00O0OO00O .get ('https://orva.tedcas.com/api/all-content/'+str (OO00O0OO0O0O00O00 ),auth =auth )#line:231
-        O000O0O0OO0000000 =await O0O00OOOO0000OOOO .json ()#line:232
-        OO00OO0OO0OO00OO0 =np .zeros (len (O000O0O0OO0000000 ),dtype =int )#line:233
-        OOO0OO00O0OOOOO00 =[]#line:234
-        for O0OO0O0000OOOOOO0 in OOOOO0O0O0O0O0O00 :#line:235
-            O0O0O0OO0OO000OO0 =0 #line:236
-            for O0000OO00O0O000O0 in range (100 ):#line:237
-                O0000OO00O0O000O0 =O0000OO00O0O000O0 /10 #line:238
-                if O0OO0O0000OOOOOO0 ==str (O0000OO00O0O000O0 ):#line:239
-                    O0OO0O0000OOOOOO0 =str (O0000OO00O0O000O0 ).split ('.')#line:240
-                    OOO0OO00O0OOOOO00 .append (O0OO0O0000OOOOOO0 )#line:241
-                    O0O0O0OO0OO000OO0 =O0O0O0OO0OO000OO0 +1 #line:242
-            if O0OO0O0000OOOOOO0 =='con':#line:243
-                O0O0O0OO0OO000OO0 =O0O0O0OO0OO000OO0 +1 #line:244
-            if O0O0O0OO0OO000OO0 ==0 :#line:245
-                OOO0OO00O0OOOOO00 .append (O0OO0O0000OOOOOO0 )#line:246
-        for O0OOO0OOO0O000O00 in range (len (O000O0O0OO0000000 )):#line:247
-            O0OOOO000000O0OOO =0 #line:248
-            OOOO000OO0O00O0O0 =O000O0O0OO0000000 [O0OOO0OOO0O000O00 ]#line:249
-            OOOO0O0O0000OOOOO =str (OOOO000OO0O00O0O0 ['title']).lower ()#line:250
-            OOOO0O0O0000OOOOO =remove_accents (OOOO0O0O0000OOOOO )#line:251
-            OOOO0O0O0000OOOOO =OOOO0O0O0000OOOOO .split (' ')#line:252
-            for OOOO0O0OO000O0OO0 ,OO0O000O00000OOO0 in enumerate (OOOO0O0O0000OOOOO ):#line:253
-                for OOOO00OOOOO0OOOOO ,O0OOO00O00OO000O0 in enumerate (OOOO0O0O0000OOOOO ):#line:254
-                    if OOOO00OOOOO0OOOOO !=OOOO0O0OO000O0OO0 :#line:255
-                        if OO0O000O00000OOO0 ==O0OOO00O00OO000O0 :#line:256
-                            OOOO0O0O0000OOOOO .pop (OOOO00OOOOO0OOOOO )#line:257
-            for OOOO0O0OO000O0OO0 ,OO0O000O00000OOO0 in enumerate (OOOO0O0O0000OOOOO ):#line:258
-                for O0000OO00O0O000O0 in range (100 ):#line:259
-                    O0000OO00O0O000O0 =O0000OO00O0O000O0 /10 #line:260
-                    if OO0O000O00000OOO0 ==str (O0000OO00O0O000O0 ):#line:261
-                        OO0O000O00000OOO0 =str (O0000OO00O0O000O0 ).split ('.')#line:262
-                        OOOO0O0O0000OOOOO .append (OO0O000O00000OOO0 )#line:263
-                for OOO00O0O0OOO00000 in OOO0OO00O0OOOOO00 :#line:264
-                            if OOO00O0O0OOO00000 =="maya":#line:265
-                                OOO00O0O0OOO00000 ="malla"#line:266
-                            if OOO00O0O0OOO00000 =="pilos"or OOO00O0O0OOO00000 =="pilo":#line:267
-                                OOO00O0O0OOO00000 ="philo"#line:268
-                            if OOO00O0O0OOO00000 =="filos"or OOO00O0O0OOO00000 =="filo":#line:269
-                                OOO00O0O0OOO00000 ="philo"#line:270
-                            if OOO00O0O0OOO00000 =="sinces"or OOO00O0O0OOO00000 =="sinc":#line:271
-                                OOO00O0O0OOO00000 ="synthe"#line:272
-                            if OOO00O0O0OOO00000 =="sintes"or OOO00O0O0OOO00000 =="sint":#line:273
-                                OOO00O0O0OOO00000 ="synthe"#line:274
-                            if OOO00O0O0OOO00000 =="axos"or OOO00O0O0OOO00000 =="axo":#line:275
-                                OOO00O0O0OOO00000 ="axso"#line:276
-                            if OOO00O0O0OOO00000 =="uno":#line:277
-                                OOO00O0O0OOO00000 =1 #line:278
-                            if OOO00O0O0OOO00000 =="dos"or OOO00O0O0OOO00000 =="do":#line:279
-                                OOO00O0O0OOO00000 =2 #line:280
-                            if OOO00O0O0OOO00000 =="tres"or OOO00O0O0OOO00000 =="tr":#line:281
-                                OOO00O0O0OOO00000 =3 #line:282
-                            if OOO00O0O0OOO00000 =="cuatro":#line:283
-                                OOO00O0O0OOO00000 =4 #line:284
-                            if OOO00O0O0OOO00000 =="cinco":#line:285
-                                OOO00O0O0OOO00000 =5 #line:286
-                            if OOO00O0O0OOO00000 =="seis"or OOO00O0O0OOO00000 =="sei":#line:287
-                                OOO00O0O0OOO00000 =6 #line:288
-                            if OOO00O0O0OOO00000 =="siete":#line:289
-                                OOO00O0O0OOO00000 =7 #line:290
-                            if OOO00O0O0OOO00000 =="ocho":#line:291
-                                OOO00O0O0OOO00000 =8 #line:292
-                            if OOO00O0O0OOO00000 =="nueve":#line:293
-                                OOO00O0O0OOO00000 =9 #line:294
-                            if OOO00O0O0OOO00000 =="cero":#line:295
-                                OOO00O0O0OOO00000 =0 #line:296
-                            if OOO00O0O0OOO00000 =="veintiuno":#line:297
-                                OOO00O0O0OOO00000 ="21"#line:298
-                            if OOO00O0O0OOO00000 =="veinte":#line:299
-                                OOO00O0O0OOO00000 ="20"#line:300
-                            if OOO00O0O0OOO00000 =="veintidos"or OOO00O0O0OOO00000 =="veintido":#line:301
-                                OOO00O0O0OOO00000 ="22"#line:302
-                            if OOO00O0O0OOO00000 =="veintitres"or OOO00O0O0OOO00000 =="veintitre":#line:303
-                                OOO00O0O0OOO00000 ="23"#line:304
-                            if OOO00O0O0OOO00000 =="veinticuatro":#line:305
-                                OOO00O0O0OOO00000 ="24"#line:306
-                            if OOO00O0O0OOO00000 =="veinticinco":#line:307
-                                OOO00O0O0OOO00000 ="25"#line:308
-                            if OOO00O0O0OOO00000 =="veintiseis"or OOO00O0O0OOO00000 =="veintisei":#line:309
-                                OOO00O0O0OOO00000 ="26"#line:310
-                            if OOO00O0O0OOO00000 =="veintisiete":#line:311
-                                OOO00O0O0OOO00000 ="27"#line:312
-                            if OOO00O0O0OOO00000 =="veintiocho":#line:313
-                                OOO00O0O0OOO00000 ="28"#line:314
-                            if OOO00O0O0OOO00000 =="veintinueve":#line:315
-                                OOO00O0O0OOO00000 ="29"#line:316
-                            if OOO00O0O0OOO00000 =="treinta":#line:317
-                                OOO00O0O0OOO00000 ="30"#line:318
-                            if type (OOO00O0O0OOO00000 )==int and type (O00O0OOOO0O0O00OO )==int :#line:319
-                                O0000OO00O0O000O0 =str (O00O0OOOO0O0O00OO )+'.'+str (OOO00O0O0OOO00000 )#line:320
-                                OOO00O0O0OOO00000 =O0000OO00O0O000O0 .split ('.')#line:321
-                            O00O0OOOO0O0O00OO =OOO00O0O0OOO00000 #line:322
-                            OOO00O0O0OOO00000 =inflector .singularize (str (OOO00O0O0OOO00000 ))#line:323
-                            OO0O000O00000OOO0 =inflector .singularize (str (OO0O000O00000OOO0 ))#line:324
-                            OOO00O0O0OOO00000 =remove_accents (OOO00O0O0OOO00000 )#line:325
-                            if OO0O000O00000OOO0 ==OOO00O0O0OOO00000 :#line:326
-                                O0OOOO000000O0OOO =O0OOOO000000O0OOO +1 #line:327
-            OO00OO0OO0OO00OO0 [O0OOO0OOO0O000O00 ]=O0OOOO000000O0OOO #line:328
-        OOOOOOOO00OO00O00 =np .argwhere (OO00OO0OO0OO00OO0 ==np .amax (OO00OO0OO0OO00OO0 ))#line:329
-        for O0OOO0OOO0O000O00 in OOOOOOOO00OO00O00 :#line:330
-            OO0O00OO000O0O0O0 .append (O000O0O0OO0000000 [int (O0OOO0OOO0O000O00 )])#line:331
-        if np .all (OO00OO0OO0OO00OO0 ==0 ):#line:332
-            OO0O00OO000O0O0O0 =None #line:333
-    return OO0O00OO000O0O0O0 #line:334
-async def cargar_tipo (O000000OO000O0OO0 ,OOO0OOO000O000O0O ):#line:336
-    O0O0OO0O00OOO0OOO =aiohttp .TCPConnector (ssl =True )#line:337
-    async with aiohttp .ClientSession (connector =O0O0OO0O00OOO0OOO )as OOO0OOOO00OO0000O :#line:338
-        OOO0OO0O0OOO0OO00 =await OOO0OOOO00OO0000O .get (f'{base_url}all-content/{OOO0OOO000O000O0O}',auth =auth )#line:339
-        OO0O00O0OOO0OOO00 =await OOO0OO0O0OOO0OO00 .json ()#line:340
-        OOO0000OOOOOO00OO =None #line:341
-        O00OO00OOO0OO0000 =None #line:342
-        for OOOOOO0O0OOOOO0O0 in OO0O00O0OOO0OOO00 :#line:343
-            if O000000OO000O0OO0 ==OOOOOO0O0OOOOO0O0 ["nid"]:#line:344
-                OOO0000OOOOOO00OO =OOOOOO0O0OOOOO0O0 ["type"]#line:345
-                O00OO00OOO0OO0000 =OOOOOO0O0OOOOO0O0 #line:346
-                break #line:347
-    return O00OO00OOO0OO0000 ,OOO0000OOOOOO00OO #line:348
-async def cargar_archivo (O0OOO0OOO00OOOOOO ,O0O0O0O0OOOO00000 ,OO0OO0000OOOO0O0O ):#line:350
-    O0OO0OOO00OOO0O0O =[]#line:351
-    O00O0OO000OOO0OO0 =aiohttp .TCPConnector (ssl =True )#line:352
-    async with aiohttp .ClientSession (connector =O00O0OO000OOO0OO0 )as O000O0O0000OOO000 :#line:353
-        O000OO0O0O00OO0O0 =await O000O0O0000OOO000 .get ('https://orva.tedcas.com/api/'+str (OO0OO0000OOOO0O0O ),auth =auth )#line:354
-        OO00O0000O0OOOOOO =await O000OO0O0O00OO0O0 .json ()#line:355
-        OO00O0000O0OOOOOO =OO00O0000O0OOOOOO [0 ]#line:356
-        O000OOOO0OOOOO00O ="field_"+str (O0OOO0OOO00OOOOOO )#line:357
-        OOOO00OO0O00OO0O0 =OO00O0000O0OOOOOO [O000OOOO0OOOOO00O ]#line:358
-        if O000OOOO0OOOOO00O =="field_image":#line:359
-            OO00O0000O0OOOOOO =OO00O0000O0OOOOOO ['field_image']#line:360
-            OO00O0000O0OOOOOO =OO00O0000O0OOOOOO .split (',')#line:361
-            OO00O0000O0OOOOOO =[O0OO0OO00O00OO0O0 .replace (' ','')for O0OO0OO00O00OO0O0 in OO00O0000O0OOOOOO ]#line:362
-            for O00000OO00O0O0O00 in OO00O0000O0OOOOOO :#line:363
-                 O0OO0OOO00OOO0O0O .append ("https://orva.tedcas.com/"+str (O00000OO00O0O0O00 ))#line:364
-            print (O0OO0OOO00OOO0O0O )#line:365
-            return O0OO0OOO00OOO0O0O #line:366
-        if len (OOOO00OO0O00OO0O0 )==0 :#line:367
-             O0O0O0O0OO0O0O0O0 ="No hay archivos subidos"#line:368
-             O0OO0OOO00OOO0O0O ="https://quirohelp.onrender.com/especialidad"#line:369
-        elif type (OOOO00OO0O00OO0O0 )==str :#line:370
-             O0OO0OOO00OOO0O0O ="https://orva.tedcas.com/"+str (OOOO00OO0O00OO0O0 )#line:371
-             O0O0O0O0OO0O0O0O0 =OOOO00OO0O00OO0O0 #line:372
-        elif type (OOOO00OO0O00OO0O0 )==list :#line:373
-            for O0OOOO00O00OO00OO ,OO00O0000O0OO0OOO in OOOO00OO0O00OO0O0 :#line:374
-                O0OO0OOO00OOO0O0O [O0OOOO00O00OO00OO ]="https://orva.tedcas.com/"+str (OO00O0000O0OO0OOO )#line:375
-                O0O0O0O0OO0O0O0O0 =OOOO00OO0O00OO0O0 #line:376
-        return O0O0O0O0OOOO00000 ,O0OO0OOO00OOO0O0O ,O0O0O0O0OO0O0O0O0 #line:377
-async def cargar_archivo_grande (OO0OOO0OOOO0000O0 ,O0OO0OOOOOO0O0OOO ,OOOOOOOO000000O0O ):#line:379
-    OO0OOO0000OO0O00O =aiohttp .TCPConnector (ssl =True )#line:380
-    async with aiohttp .ClientSession (connector =OO0OOO0000OO0O00O )as O0O000OOOO00OOO0O :#line:381
-        O0O0O000OOO000O00 =await O0O000OOOO00OOO0O .get ('https://orva.tedcas.com/api/'+str (OOOOOOOO000000O0O ),auth =auth )#line:382
-        OO00O000OOO0000OO =await O0O0O000OOO000O00 .json ()#line:383
-        OOO0O0OO0O00OO00O ={}#line:384
-        if OO0OOO0OOOO0000O0 =='title_material':#line:385
-            for O00O0O0OOOO0O0O00 in OO00O000OOO0000OO :#line:386
-                  OOO0O0OO0O00OO00O [O00O0O0OOOO0O0O00 [OO0OOO0OOOO0000O0 ]]=(O00O0O0OOOO0O0O00 [OO0OOO0OOOO0000O0 ])#line:387
-            return OOO0O0OO0O00OO00O ,O0OO0OOOOOO0O0OOO #line:388
-        OO00O000OOO0000OO =OO00O000OOO0000OO [0 ]#line:389
-        OOO0O00OOOO00OO00 ="field_"+str (OO0OOO0OOOO0000O0 )#line:390
-        OOO0O00OOOO00OO00 =OO00O000OOO0000OO [OOO0O00OOOO00OO00 ]#line:391
-        if len (OOO0O00OOOO00OO00 )==0 :#line:392
-             OOO0O0OO0O00OO00O ["No hay archivos"]="https://quirohelp.onrender.com/especialidad"#line:393
-        else :#line:394
-            for O00O0O0OOOO0O0O00 in OOO0O00OOOO00OO00 :#line:395
-                OOO0O0OO0O00OO00O [O00O0O0OOOO0O0O00 ['descripcion']]="https://orva.tedcas.com/"+str (O00O0O0OOOO0O0O00 ['url'])#line:396
-        return O0OO0OOOOOO0O0OOO ,OOO0O0OO0O00OO00O #line:397
-async def cargar_caja (O00000O0O0O000O0O ,OO0OO0O000O0O00O0 ):#line:399
-    OOOO000O000OO0000 ={}#line:400
-    O00O0OOOOOOO000OO =aiohttp .TCPConnector (ssl =True )#line:401
-    async with aiohttp .ClientSession (connector =O00O0OOOOOOO000OO )as O00000O0O0OOO0OOO :#line:402
-        O0000O000O0OOO000 =await O00000O0O0OOO0OOO .get (f'{base_url}intervenciones/{O00000O0O0O000O0O}',auth =auth )#line:403
-        O0O00OO0000O0OOO0 =await O0000O000O0OOO000 .json ()#line:404
-        O0O00OO0000O0OOO0 =O0O00OO0000O0OOO0 [0 ]#line:405
-    if 'field_cajas'in O0O00OO0000O0OOO0 :#line:406
-        O0O00OO0000O0OOO0 =O0O00OO0000O0OOO0 ['field_cajas']#line:407
-        for OOO00OO0OO0O0OOOO in O0O00OO0000O0OOO0 :#line:408
-            OOOO000O000OO0000 [OOO00OO0OO0O0OOOO ['id']]=OOO00OO0OO0O0OOOO ['caja']#line:409
-    else :#line:410
-        OOOO000O000OO0000 [str (O00000O0O0O000O0O )]="No hay archivos"#line:411
-    return OOOO000O000OO0000 ,OO0OO0O000O0O00O0 #line:412
-async def cargar_instrumental (OO00O0O0OOO0OOO0O ,OOO0OOOOO00O00OOO ):#line:414
-    OO00O0000000OOO0O ={}#line:415
-    OO00000000O0OOO00 =aiohttp .TCPConnector (ssl =True )#line:416
-    async with aiohttp .ClientSession (connector =OO00000000O0OOO00 )as OO00O000OO0OOO0OO :#line:417
-        OO000OOO0OO0O0000 =await OO00O000OO0OOO0OO .get ('https://orva.tedcas.com/api/'+str (OOO0OOOOO00O00OOO ),auth =auth )#line:418
-        O00OOOOO00OOOOO0O =await OO000OOO0OO0O0000 .json ()#line:419
-        for O0O0O0000OOO0O0O0 in O00OOOOO00OOOOO0O :#line:420
-         if 'instrumental'in O0O0O0000OOO0O0O0 :#line:421
-            for O000000O0OO0OO00O in O0O0O0000OOO0O0O0 ['instrumental']:#line:422
-                if O000000O0OO0OO00O ['id']==OO00O0O0OOO0OOO0O :#line:423
-                    OO00O0000000OOO0O [O0O0O0000OOO0O0O0 ['nid']]=O0O0O0000OOO0O0O0 ['title']#line:424
-    return OO00O0000000OOO0O #line:425
-async def cargar_botones_pdf_admision ():#line:427
-    O00OO0O0O0O0O0OOO ={}#line:428
-    OO00O0OOO00000OO0 ={}#line:429
-    O0OOOO00OOOO0O00O ={}#line:430
-    O0000O000O0000OOO ={}#line:431
-    O000OO00OOOO0O00O =aiohttp .TCPConnector (ssl =True )#line:432
-    async with aiohttp .ClientSession (connector =O000OO00OOOO0O00O )as OO0OO0000OOO000O0 :#line:433
-        OO0O0OOO0O000OOOO =await OO0OO0000OOO000O0 .get ('https://orva.tedcas.com/api/all-content/1621',auth =auth )#line:434
-        OO0OO000O00000000 =await OO0O0OOO0O000OOOO .json ()#line:435
-        for OO0OO0OOOO00O0OO0 in OO0OO000O00000000 :#line:436
-            OO00OOO0OOO0OO0O0 =await OO0OO0000OOO000O0 .get ('https://orva.tedcas.com/api/intervenciones/'+str (OO0OO0OOOO00O0OO0 ['nid']),auth =auth )#line:437
-            OO0O0O00O00000000 =await OO00OOO0OOO0OO0O0 .json ()#line:438
-            OO0O0O00O00000000 =OO0O0O00O00000000 [0 ]#line:439
-            O000O0O000OO0OO00 =OO0O0O00O00000000 ['field_pdf']#line:440
-            O000O0O000OO0OO00 =O000O0O000OO0OO00 [0 ]#line:441
-            if OO0O0O00O00000000 ['field_tecnica']=="Mapa de camas":#line:442
-                O00OO0O0O0O0O0OOO [OO0O0O00O00000000 ['title']]="https://orva.tedcas.com/"+str (O000O0O000OO0OO00 ['url'])#line:443
-            elif OO0O0O00O00000000 ['field_tecnica']=="Ambulancias":#line:444
-                OO00O0OOO00000OO0 [OO0O0O00O00000000 ['title']]="https://orva.tedcas.com/"+str (O000O0O000OO0OO00 ['url'])#line:445
-            elif OO0O0O00O00000000 ['field_tecnica']=="Programación quirúrgica":#line:446
-                O0OOOO00OOOO0O00O [OO0O0O00O00000000 ['title']]="https://orva.tedcas.com/"+str (O000O0O000OO0OO00 ['url'])#line:447
-            elif OO0O0O00O00000000 ['field_tecnica']=="Otros":#line:448
-                O0000O000O0000OOO [OO0O0O00O00000000 ['title']]="https://orva.tedcas.com/"+str (O000O0O000OO0OO00 ['url'])#line:449
-    return O00OO0O0O0O0O0OOO ,OO00O0OOO00000OO0 ,O0OOOO00OOOO0O00O ,O0000O000O0000OOO #line:450
-def remove_accents (OO000OO0O0000O000 ):#line:452
-    OO0O0000O0O0O00OO =unicodedata .normalize ('NFKD',OO000OO0O0000O000 )#line:453
-    return u"".join ([OOOOO0O000O0O0OOO for OOOOO0O000O0O0OOO in OO0O0000O0O0O00OO if not unicodedata .combining (OOOOO0O000O0O0OOO )])#line:454
-def adaptar_salida (O0O0O000000000000 ):#line:456
-    OO00O0O0O00OO0OOO =[]#line:457
-    O0O0O000000000000 =str (O0O0O000000000000 ).lower ()#line:458
-    O0O0O000000000000 =O0O0O000000000000 .split ("}")#line:459
-    O0O0O000000000000 =O0O0O000000000000 [0 ].split (":")#line:460
-    if len (O0O0O000000000000 )>=2 :#line:461
-        O0OOOO0OOO000OO0O =O0O0O000000000000 [1 ].split ("'")#line:462
-        OO00O0O0O00OO0OOO =O0OOOO0OOO000OO0O [1 ].split ()#line:463
-    return OO00O0O0O00OO0OOO #line:464
-def takeCommand ():#line:466
-    OO0OO00OO0OOOO00O =sr .Recognizer ()#line:467
-    with sr .Microphone ()as OOO00O0O0OOO0OOO0 :#line:468
-        print ("Listening...")#line:469
-        OO0OO00OO0OOOO00O .pause_threshold =1 #line:470
-        OO00OO00OO0OOO0OO =OO0OO00OO0OOOO00O .adjust_for_ambient_noise (OOO00O0O0OOO0OOO0 )#line:471
-        OO00OO00OO0OOO0OO =OO0OO00OO0OOOO00O .listen (OOO00O0O0OOO0OOO0 )#line:472
-    try :#line:473
-        print ("Recognizing...")#line:474
-        OOO0OOO000O00O00O =OO0OO00OO0OOOO00O .recognize_google (OO00OO00OO0OOO0OO ,language ='es-ES')#line:475
-        print (f"User said: {OOO0OOO000O00O00O}\n")#line:476
-    except Exception as O00O0OOO0O0OOO00O :#line:477
-        print (O00O0OOO0O0OOO00O )#line:478
-        print ("Unable to Recognize your voice.")#line:479
-        return "none"#line:480
-    return OOO0OOO000O00O00O #line:481
-app =Flask (__name__ )#line:483
-app .config ['SECRET_KEY']='mysecretkey'#line:484
-IMG_FOLDER =os .path .join ('static','IMG')#line:486
-app .config ['UPLOAD_FOLDER']=IMG_FOLDER #line:487
-@app .route ("/")#line:489
-async def hello ():#line:490
-    O0OO00OO0O000O0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'trauma.jpeg')#line:491
-    OO0O00OOO0O0OOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'uro.jpeg')#line:492
-    O0O0OO00OO0O0O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'adm.jpeg')#line:493
-    O00O0O0OOOO0OO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'tijerass.png')#line:494
-    return render_template ('especialidad.html',user_image0 =O00O0O0OOOO0OO0OO ,user_image1 =O0OO00OO0O000O0O0 ,user_image2 =OO0O00OOO0O0OOO0O ,user_image3 =O0O0OO00OO0O0O0OO )#line:495
-@app .route ("/especialidad")#line:497
-async def especialidad ():#line:498
-    O00OO0O0OO0OO0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'trauma.jpeg')#line:499
-    OOOO000O00O00OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'uro.jpeg')#line:500
-    OO000OOOOOO00O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'adm.jpeg')#line:501
-    OO0O0000OOOO0000O =os .path .join (app .config ['UPLOAD_FOLDER'],'tijerass.png')#line:502
-    return render_template ('especialidad.html',user_image0 =OO0O0000OOOO0000O ,user_image1 =O00OO0O0OO0OO0O0O ,user_image2 =OOOO000O00O00OOO0 ,user_image3 =OO000OOOOOO00O000 )#line:503
-@app .route ("/seleccion_trauma",methods =['GET','POST'])#line:505
-async def seleccion_trauma ():#line:506
-    OO0OO00O0000OO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:507
-    OO00OO000OO0OOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:508
-    O0OOO0OOOOOOOO0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:509
-    O0OOOO0O0OOOOOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:510
-    return render_template ('seleccion_trauma.html',user_image4 =OO0OO00O0000OO000 ,user_image5 =OO00OO000OO0OOO00 ,user_image6 =O0OOO0OOOOOOOO0O0 ,user_image7 =O0OOOO0O0OOOOOO0O )#line:511
-@app .route ("/buscador_trauma",methods =['GET','POST'])#line:513
-async def buscador_trauma ():#line:514
-    O00O0OOOO0O000OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:515
-    O0OO00O0O0OOOO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:516
-    OOO00O0OO0O00O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:517
-    OOOOOOOO0O00OOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:518
-    O0OO00O000OO0OO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:519
-    OO0O00000OO0O000O =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:520
-    O000OOO0OOO00O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:521
-    OO00O0OOOOO0OO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:522
-    OO0OO00OO0000OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:523
-    OOO00OO00OOO00OOO =str (request .form .to_dict ())#line:524
-    OOO00OO00OOO00OOO =adaptar_salida (OOO00OO00OOO00OOO )#line:525
-    O0OOO0OOOOO000O00 ={}#line:526
-    O0OOO0OOOOO000O00 [""]=""#line:527
-    if len (OOO00OO00OOO00OOO )==0 :#line:528
-        return render_template ('buscador_trauma.html',result_busqueda =O0OOO0OOOOO000O00 ,user_image4 =O00O0OOOO0O000OOO ,user_image5 =O0OO00O0O0OOOO000 ,user_image6 =OOO00O0OO0O00O0OO ,user_image7 =OOOOOOOO0O00OOO00 ,user_image8 =O000OOO0OOO00O000 ,user_image9 =OO00O0OOOOO0OO000 ,user_image10 =O0OO00O000OO0OO00 ,user_image11 =OO0OO00OO0000OOO0 ,user_image12 =OO0O00000OO0O000O ,nid2 =0 )#line:529
-    elif OOO00OO00OOO00OOO !=None or "{}":#line:530
-        OOOOO0O000O0O00O0 =1 #line:531
-        O0OO00OO0OO00OOOO =await cargar_base_datos (OOO00OO00OOO00OOO ,OOOOO0O000O0O00O0 )#line:532
-        OOOO0O0O0OOO00OOO =await buscar_faq (OOO00OO00OOO00OOO ,1 )#line:533
-        if O0OO00OO0OO00OOOO ==None :#line:534
-            if len (OOOO0O0O0OOO00OOO )==0 :#line:535
-                return render_template ('buscador_trauma.html',result_busqueda =O0OOO0OOOOO000O00 ,prediction_text ="No hay resultados para tu busqueda",user_image4 =O00O0OOOO0O000OOO ,user_image5 =O0OO00O0O0OOOO000 ,user_image6 =OOO00O0OO0O00O0OO ,user_image7 =OOOOOOOO0O00OOO00 ,user_image8 =O000OOO0OOO00O000 ,user_image9 =OO00O0OOOOO0OO000 ,user_image10 =O0OO00O000OO0OO00 ,user_image11 =OO0OO00OO0000OOO0 ,user_image12 =OO0O00000OO0O000O ,nid2 =0 )#line:536
-            else :#line:537
-                 return render_template ('buscador_trauma.html',faqs =OOOO0O0O0OOO00OOO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O0OOO0OOOOO000O00 ,user_image4 =O00O0OOOO0O000OOO ,user_image5 =O0OO00O0O0OOOO000 ,user_image6 =OOO00O0OO0O00O0OO ,user_image7 =OOOOOOOO0O00OOO00 ,user_image8 =O000OOO0OOO00O000 ,user_image9 =OO00O0OOOOO0OO000 ,user_image10 =O0OO00O000OO0OO00 ,user_image11 =OO0OO00OO0000OOO0 ,user_image12 =OO0O00000OO0O000O ,nid2 =0 )#line:538
-        elif len (O0OO00OO0OO00OOOO )>=1 :#line:539
-            OOOOOO0OO0OOOOO00 =[]#line:540
-            OOO00OO0000000O00 =[]#line:541
-            O0OOO0OOOOO000O00 ={}#line:542
-            for O0O00000OO0O0000O in O0OO00OO0OO00OOOO :#line:543
-                OOOOOO0OO0OOOOO00 .append (O0O00000OO0O0000O ["title"])#line:544
-                OOO00OO0000000O00 .append (O0O00000OO0O0000O ["nid"])#line:545
-            for O0O00O000OOO0OO00 ,O0O00000OO0O0000O in enumerate (OOOOOO0OO0OOOOO00 ):#line:546
-                 O0OOO0OOOOO000O00 [OOO00OO0000000O00 [O0O00O000OOO0OO00 ]]=O0O00000OO0O0000O #line:547
-            if len (OOOO0O0O0OOO00OOO )!=0 :#line:549
-                return render_template ('buscador_trauma.html',faqs =OOOO0O0O0OOO00OOO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O0OOO0OOOOO000O00 ,user_image4 =O00O0OOOO0O000OOO ,user_image5 =O0OO00O0O0OOOO000 ,user_image6 =OOO00O0OO0O00O0OO ,user_image7 =OOOOOOOO0O00OOO00 ,user_image8 =O000OOO0OOO00O000 ,user_image9 =OO00O0OOOOO0OO000 ,user_image10 =O0OO00O000OO0OO00 ,user_image11 =OO0OO00OO0000OOO0 ,user_image12 =OO0O00000OO0O000O ,nid2 =0 )#line:550
-            else :#line:551
-                return render_template ('buscador_trauma.html',result_busqueda =O0OOO0OOOOO000O00 ,user_image4 =O00O0OOOO0O000OOO ,user_image5 =O0OO00O0O0OOOO000 ,user_image6 =OOO00O0OO0O00O0OO ,user_image7 =OOOOOOOO0O00OOO00 ,user_image8 =O000OOO0OOO00O000 ,user_image9 =OO00O0OOOOO0OO000 ,user_image10 =O0OO00O000OO0OO00 ,user_image11 =OO0OO00OO0000OOO0 ,user_image12 =OO0O00000OO0O000O ,nid2 =0 )#line:552
-@app .route ("/resultado_trauma",methods =['GET','POST'])#line:554
-async def resultado_trauma ():#line:555
-    O000OOO000OO0OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:556
-    OOO0O00O000O0OO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:557
-    O0000OO0O0O0OO00O =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:558
-    O0O00O00O00OO00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:559
-    O00O00O0O0OOO00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:560
-    O000O00OO000O0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:561
-    O0OO0OOO0O0000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:562
-    O0OOO0OO0OOOOOO0O =request .args .get ('link')#line:563
-    OOO00OO000OOOO00O ,OOOOOO0O0OO00O00O =await cargar_tipo (O0OOO0OO0OOOOOO0O ,1 )#line:564
-    O0O0OO0OOO0O00O0O =OOO00OO000OOOO00O ['title']#line:565
-    if OOOOOO0O0OO00O00O =="Intervencion":#line:567
-        OOO0000000OO0OOO0 ,O0OO0OOO00O0000OO =await cargar_caja (str (O0OOO0OO0OOOOOO0O ),'Materiales - Cajas: ')#line:568
-        return render_template ('intervencion_trauma.html',user_image8 =O00O00O0O0OOO00OO ,user_image9 =O000O00OO000O0OOO ,user_image10 =O0000OO0O0O0OO00O ,user_image11 =O0OO0OOO0O0000OO0 ,user_image12 =O0O00O00O00OO00O0 ,instrumental =OOO0000000OO0OOO0 ,texto_cajas =O0OO0OOO00O0000OO ,title =O0O0OO0OOO0O00O0O ,user_image6 =O000OOO000OO0OOO0 ,user_image7 =OOO0O00O000O0OO00 ,nid2 =O0OOO0OO0OOOOOO0O )#line:569
-    elif OOOOOO0O0OO00O00O =='Caja':#line:570
-        OOO0OOO000OOO0O00 ,O000OOO0000O0O000 ,OOOO00OOOO000000O =await cargar_archivo ("ubicacion","Ubicacion: ","cajas/"+str (O0OOO0OO0OOOOOO0O ))#line:571
-        O00000OOOO00O0O0O =await cargar_archivo ("image","Imagen: ","cajas/"+str (O0OOO0OO0OOOOOO0O ))#line:572
-        O00OO0O0OO00O0OOO ,OO0OOO0OOO0OOOOO0 =await cargar_archivo_grande ("title_material","Material : ","cajas/"+str (O0OOO0OO0OOOOOO0O ))#line:573
-        return render_template ('caja_trauma.html',title =O0O0OO0OOO0O00O0O ,files_instru =O00OO0O0OO00O0OOO ,texto_instru =OO0OOO0OOO0OOOOO0 ,texto_ubi =OOO0OOO000OOO0O00 ,file_texto_ubi =OOOO00OOOO000000O ,file_imagen =O00000OOOO00O0O0O ,user_image6 =O000OOO000OO0OOO0 ,user_image7 =OOO0O00O000O0OO00 )#line:574
-    elif OOOOOO0O0OO00O00O =='Instrumental':#line:575
-        OO000O0OOOO0O00OO =await cargar_instrumental (O0OOO0OO0OOOOOO0O ,'listado_completo_cajas/1')#line:576
-        return render_template ('instrumental_trauma.html',cajas =OO000O0OOOO0O00OO ,texto ='El instrumental que buscas esta presente en las siguientes cajas: ',title =O0O0OO0OOO0O00O0O ,user_image6 =O000OOO000OO0OOO0 ,user_image7 =OOO0O00O000O0OO00 )#line:577
-@app .route ("/protocolos_trauma",methods =['GET','POST'])#line:579
-async def protocolos_trauma ():#line:580
-    OOO00OOOOO00O0OO0 =request .args .get ('link2')#line:581
-    O0O0OO00000O00O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:582
-    O000OOO000OO00O00 =await boton_word_ppt (1 ,"field_protocolo",OOO00OOOOO00O0OO0 )#line:583
-    return render_template ('protocolo.html',protocolos =O000OOO000OO00O00 ,user_image7 =O0O0OO00000O00O00 )#line:584
-@app .route ("/guia_visual_trauma",methods =['GET','POST'])#line:586
-async def guia_visual_trauma ():#line:587
-    O0O0OO0O0O0OO0O0O =request .args .get ('link2')#line:588
-    OOOO0O0O00000O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:589
-    O0OO00O00O0OO0OOO =await boton_word_ppt (1 ,"field_guia_visual",O0O0OO0O0O0OO0O0O )#line:590
-    return render_template ('guia_visual.html',guia_visual =O0OO00O00O0OO0OOO ,user_image7 =OOOO0O0O00000O000 )#line:591
-@app .route ("/pdf_casa_trauma",methods =['GET','POST'])#line:593
-async def pdf_casa_trauma ():#line:594
-    OOOOOO0OOOOOO000O =request .args .get ('link2')#line:595
-    O0OO0O0OOO000OO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:596
-    O000O0OO000O000O0 =await boton_pdf_video (1 ,"field_pdf",OOOOOO0OOOOOO000O )#line:597
-    return render_template ('pdf_casa_comercial.html',user_image7 =O0OO0O0OOO000OO0O ,titulos =O000O0OO000O000O0 )#line:598
-@app .route ("/videos_trauma",methods =['GET','POST'])#line:600
-async def videos_trauma ():#line:601
-    O0OO0OO00O00O0OO0 =request .args .get ('link2')#line:602
-    OOOOO0OOOOOO0OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:603
-    O0OOOO0000OO000O0 =await boton_pdf_video (1 ,"field_video",O0OO0OO00O00O0OO0 )#line:604
-    return render_template ('videos.html',user_image7 =OOOOO0OOOOOO0OOOO ,titulos =O0OOOO0000OO000O0 )#line:605
-@app .route ("/materiales_trauma",methods =['GET','POST'])#line:607
-async def materiales_trauma ():#line:608
-    OOOO0000000O00O0O =request .args .get ('link2')#line:609
-    OO00O000OO0OOOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:610
-    O0O0O0OO0OOOOOO0O =await boton_materiales (1 ,OOOO0000000O00O0O )#line:611
-    if len (O0O0O0OO0OOOOOO0O [''])==0 :#line:612
-       return render_template ('materiales.html',user_image7 =OO00O000OO0OOOOOO ,cajas =O0O0O0OO0OOOOOO0O ,no_hay ="No hay materiales")#line:613
-    return render_template ('materiales.html',user_image7 =OO00O000OO0OOOOOO ,cajas =O0O0O0OO0OOOOOO0O )#line:614
-@app .route ("/escuchar_trauma1",methods =['GET','POST'])#line:616
-async def escuchar_trauma1 ():#line:617
-    OOO000O0O00OOO00O =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:618
-    O00OO00OO0O00O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:619
-    O0O0OOOOOO0OOO00O =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:620
-    O00OO0OO000O0000O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:621
-    OO00OO000O0OO0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:622
-    OO000O0OO0000O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:623
-    OO0000OO00OO00000 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:624
-    O0O0000OOOO0O00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:625
-    return render_template ('escuchar_trauma1.html',nid2 =0 ,prediction_text ="Dale a `Escuchar´ y haz tu pregunta",user_image5 =OO000O0OO0000O0OO ,user_image6 =OO0000OO00OO00000 ,user_image7 =O0O0000OOOO0O00OO ,user_image8 =O0O0OOOOOO0OOO00O ,user_image9 =O00OO0OO000O0000O ,user_image10 =OOO000O0O00OOO00O ,user_image11 =OO00OO000O0OO0O0O ,user_image12 =O00OO00OO0O00O000 )#line:626
-@app .route ("/escuchar_trauma",methods =['GET','POST'])#line:628
-async def escuchar_trauma ():#line:629
-    O00OOO0OOOOO0O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:630
-    OO0O000OOOO0OOOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:631
-    OOO0OOOO0000O0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:632
-    O0000000O0O0O00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:633
-    OOO00000O0000OO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:634
-    O0OO0O0OO00000000 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:635
-    OO00000OOOOO000OO =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:636
-    OO0O0000OO0O00O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:637
-    OOO000OOOO000O000 =takeCommand ()#line:638
-    OOO000OOOO000O000 =str (OOO000OOOO000O000 ).lower ()#line:639
-    OOO000OOOO000O000 =OOO000OOOO000O000 .split ()#line:640
-    OO00000O0O00OO000 ={}#line:641
-    OO00000O0O00OO000 [""]=""#line:642
-    if OOO000OOOO000O000 [0 ]!="none":#line:643
-        O000O0OO00OOOOO00 =1 #line:644
-        O0OO0O00OOO00OO00 =await cargar_base_datos (OOO000OOOO000O000 ,O000O0OO00OOOOO00 )#line:645
-        O00OO00OO000OOO0O =await buscar_faq (OOO000OOOO000O000 ,0 )#line:646
-        if O0OO0O00OOO00OO00 ==None :#line:647
-            if len (O00OO00OO000OOO0O )==0 :#line:648
-                return render_template ('escuchar_trauma.html',nid2 =0 ,result_busqueda =OO00000O0O00OO000 ,prediction_text ="No hay resultados para tu busqueda",user_image6 =OO00000OOOOO000OO ,user_image7 =OO0O0000OO0O00O00 ,user_image5 =O0OO0O0OO00000000 ,user_image8 =OOO0OOOO0000O0OOO ,user_image9 =O0000000O0O0O00OO ,user_image10 =O00OOO0OOOOO0O0OO ,user_image11 =OOO00000O0000OO00 ,user_image12 =OO0O000OOOO0OOOO0 )#line:649
-            else :#line:650
-                return render_template ('escuchar_trauma.html',nid2 =0 ,faqs =O00OO00OO000OOO0O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OO00000O0O00OO000 ,user_image6 =OO00000OOOOO000OO ,user_image7 =OO0O0000OO0O00O00 ,user_image5 =O0OO0O0OO00000000 ,user_image8 =OOO0OOOO0000O0OOO ,user_image9 =O0000000O0O0O00OO ,user_image10 =O00OOO0OOOOO0O0OO ,user_image11 =OOO00000O0000OO00 ,user_image12 =OO0O000OOOO0OOOO0 )#line:651
-        elif len (O0OO0O00OOO00OO00 )>=1 :#line:652
-            OOOOO00000O000OO0 =[]#line:653
-            O0000000O0000OO0O =[]#line:654
-            OO00000O0O00OO000 ={}#line:655
-            for O0O0OO0OO0OO00000 in O0OO0O00OOO00OO00 :#line:656
-                OOOOO00000O000OO0 .append (O0O0OO0OO0OO00000 ["title"])#line:657
-                O0000000O0000OO0O .append (O0O0OO0OO0OO00000 ["nid"])#line:658
-            for OO0O0OO00O0OOO0O0 ,O0O0OO0OO0OO00000 in enumerate (OOOOO00000O000OO0 ):#line:659
-                 OO00000O0O00OO000 [O0000000O0000OO0O [OO0O0OO00O0OOO0O0 ]]=O0O0OO0OO0OO00000 #line:660
-            if len (O00OO00OO000OOO0O )==0 :#line:662
-                return render_template ('escuchar_trauma.html',nid2 =0 ,result_busqueda =OO00000O0O00OO000 ,user_image6 =OO00000OOOOO000OO ,user_image7 =OO0O0000OO0O00O00 ,user_image5 =O0OO0O0OO00000000 ,user_image8 =OOO0OOOO0000O0OOO ,user_image9 =O0000000O0O0O00OO ,user_image10 =O00OOO0OOOOO0O0OO ,user_image11 =OOO00000O0000OO00 ,user_image12 =OO0O000OOOO0OOOO0 )#line:663
-            else :#line:664
-                return render_template ('escuchar_trauma.html',nid2 =0 ,faqs =O00OO00OO000OOO0O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OO00000O0O00OO000 ,user_image6 =OO00000OOOOO000OO ,user_image7 =OO0O0000OO0O00O00 ,user_image5 =O0OO0O0OO00000000 ,user_image8 =OOO0OOOO0000O0OOO ,user_image9 =O0000000O0O0O00OO ,user_image10 =O00OOO0OOOOO0O0OO ,user_image11 =OOO00000O0000OO00 ,user_image12 =OO0O000OOOO0OOOO0 )#line:665
-    else :#line:666
-        return render_template ('escuchar_trauma.html',nid2 =0 ,result_busqueda =OO00000O0O00OO000 ,prediction_text ="No te he entendido bien, dale al boton `Escuchar´ y repite tu pregunta",user_image5 =O0OO0O0OO00000000 ,user_image6 =OO00000OOOOO000OO ,user_image7 =OO0O0000OO0O00O00 ,user_image8 =OOO0OOOO0000O0OOO ,user_image9 =O0000000O0O0O00OO ,user_image10 =O00OOO0OOOOO0O0OO ,user_image11 =OOO00000O0000OO00 ,user_image12 =OO0O000OOOO0OOOO0 )#line:667
-@app .route ("/buscador_admision",methods =['GET','POST'])#line:669
-async def buscador_admision ():#line:670
-    OOO000O00OOOO0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:671
-    OO0OOO00OOOOOOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:672
-    O00OOOO00OO0O00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:673
-    OOOO0O0000O00O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:674
-    OO00000OOOOOO0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'otros_img.png')#line:675
-    O0O000000OO000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'programacion_img.png')#line:676
-    O0OO0OOO000O000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ambulancias_img.jpg')#line:677
-    O0O0O0OOO000O0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'mapa_camas_img.jpg')#line:678
-    O000O0O000O0000O0 =str (request .form .to_dict ())#line:679
-    O000O0O000O0000O0 =adaptar_salida (O000O0O000O0000O0 )#line:680
-    O0000OOOOOOO00O0O ={}#line:681
-    O0000OOOOOOO00O0O [""]=""#line:682
-    if len (O000O0O000O0000O0 )==0 :#line:683
-        return render_template ('buscador_admision.html',user_image8 =O0O0O0OOO000O0O00 ,user_image9 =O0OO0OOO000O000O0 ,user_image10 =O0O000000OO000OO0 ,user_image11 =OO00000OOOOOO0000 ,result_busqueda =O0000OOOOOOO00O0O ,prediction_text ="ya puedes hacer tu pregunta",user_image4 =OOO000O00OOOO0OOO ,user_image5 =OO0OOO00OOOOOOO0O ,user_image6 =O00OOOO00OO0O00OO ,user_image7 =OOOO0O0000O00O0OO )#line:684
-    elif O000O0O000O0000O0 !=None or "{}":#line:685
-        OO0000OO0000OO0O0 =1621 #line:686
-        OO0OOOOOOO00OOO00 =await cargar_base_datos (O000O0O000O0000O0 ,OO0000OO0000OO0O0 )#line:687
-        OO0O000000OO0O0O0 =await buscar_faq (O000O0O000O0000O0 ,1 )#line:688
-        if OO0OOOOOOO00OOO00 ==None :#line:689
-            if len (OO0O000000OO0O0O0 )==0 :#line:690
-                return render_template ('buscador_admision.html',user_image8 =O0O0O0OOO000O0O00 ,user_image9 =O0OO0OOO000O000O0 ,user_image10 =O0O000000OO000OO0 ,user_image11 =OO00000OOOOOO0000 ,result_busqueda =O0000OOOOOOO00O0O ,prediction_text ="No hay resultados para tu busqueda",user_image4 =OOO000O00OOOO0OOO ,user_image5 =OO0OOO00OOOOOOO0O ,user_image6 =O00OOOO00OO0O00OO ,user_image7 =OOOO0O0000O00O0OO )#line:691
-            else :#line:692
-                return render_template ('buscador_admision.html',user_image8 =O0O0O0OOO000O0O00 ,user_image9 =O0OO0OOO000O000O0 ,user_image10 =O0O000000OO000OO0 ,user_image11 =OO00000OOOOOO0000 ,faqs =OO0O000000OO0O0O0 ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O0000OOOOOOO00O0O ,user_image4 =OOO000O00OOOO0OOO ,user_image5 =OO0OOO00OOOOOOO0O ,user_image6 =O00OOOO00OO0O00OO ,user_image7 =OOOO0O0000O00O0OO )#line:693
-        elif len (OO0OOOOOOO00OOO00 )>=1 :#line:694
-            OOOOOO00OOO0OO000 =[]#line:695
-            O00O00000OOOO00OO =[]#line:696
-            O0000OOOOOOO00O0O ={}#line:697
-            for OOO00O0O00O000000 in OO0OOOOOOO00OOO00 :#line:698
-                O00O00000OOOO00OO .append (OOO00O0O00O000000 ["nid"])#line:699
-                for OOO0O0OO000O00O0O in O00O00000OOOO00OO :#line:700
-                    OO000O0O0OOOOOO00 =aiohttp .TCPConnector (ssl =True )#line:701
-                    async with aiohttp .ClientSession (connector =OO000O0O0OOOOOO00 )as O0O00O0OOO00000O0 :#line:702
-                        O0O0000O0O0OOOO00 =await O0O00O0OOO00000O0 .get ('https://orva.tedcas.com/api/intervenciones/'+str (OOO0O0OO000O00O0O ),auth =auth )#line:703
-                        O0O0O0OOOO0O0O000 =await O0O0000O0O0OOOO00 .json ()#line:704
-                        O0O0O0OOOO0O0O000 =O0O0O0OOOO0O0O000 [0 ]#line:705
-                        O00O00O0OO0OO000O =O0O0O0OOOO0O0O000 ['field_pdf']#line:706
-                        O00O00O0OO0OO000O =O00O00O0OO0OO000O [0 ]#line:707
-                        O0000OOOOOOO00O0O [O0O0O0OOOO0O0O000 ['title']]="https://orva.tedcas.com/"+str (O00O00O0OO0OO000O ['url'])#line:708
-            if len (OO0O000000OO0O0O0 )==0 :#line:709
-                return render_template ('buscador_admision.html',user_image8 =O0O0O0OOO000O0O00 ,user_image9 =O0OO0OOO000O000O0 ,user_image10 =O0O000000OO000OO0 ,user_image11 =OO00000OOOOOO0000 ,result_busqueda =O0000OOOOOOO00O0O ,user_image4 =OOO000O00OOOO0OOO ,user_image5 =OO0OOO00OOOOOOO0O ,user_image6 =O00OOOO00OO0O00OO ,user_image7 =OOOO0O0000O00O0OO )#line:710
-            else :#line:711
-                return render_template ('buscador_admision.html',faqs =OO0O000000OO0O0O0 ,faq_titulo ="Preguntas y respuestas: ",user_image8 =O0O0O0OOO000O0O00 ,user_image9 =O0OO0OOO000O000O0 ,user_image10 =O0O000000OO000OO0 ,user_image11 =OO00000OOOOOO0000 ,result_busqueda =O0000OOOOOOO00O0O ,user_image4 =OOO000O00OOOO0OOO ,user_image5 =OO0OOO00OOOOOOO0O ,user_image6 =O00OOOO00OO0O00OO ,user_image7 =OOOO0O0000O00O0OO )#line:712
-@app .route ("/mapa_camas",methods =['GET','POST'])#line:714
-async def mapa_camas ():#line:715
-    O0O00OOO0000000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:716
-    O000O0OO0O00OOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:717
-    O00O0O000O000OOOO ,O0000OO0O00O0OO00 ,OOOOOOO0000O0OO00 ,OOOO0O0O00OOO0OO0 =await cargar_botones_pdf_admision ()#line:718
-    return render_template ('mapa_camas.html',text =O00O0O000O000OOOO ,user_image6 =O0O00OOO0000000O0 ,user_image7 =O000O0OO0O00OOO00 )#line:719
-@app .route ("/ambulancias",methods =['GET','POST'])#line:721
-async def ambulancias ():#line:722
-    OOO00OOOOO0000000 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:723
-    OOOOO0O00O0O0O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:724
-    OOO00O0O0OO0O00OO ,O0OO0O0000O00OOO0 ,OOO0OOO00OO0OOOO0 ,OOO00OO00000O0OO0 =await cargar_botones_pdf_admision ()#line:725
-    return render_template ('ambulancias.html',text =O0OO0O0000O00OOO0 ,user_image6 =OOO00OOOOO0000000 ,user_image7 =OOOOO0O00O0O0O00O )#line:726
-@app .route ("/programacion_quirurgica",methods =['GET','POST'])#line:728
-async def programacion_quirurgica ():#line:729
-    OO00O000O0OO000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:730
-    O00O0O0O0OO00OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:731
-    O00OO0O0OOO00OOO0 ,O0O000OO0O0O000O0 ,OOO0OO00OOOOO00OO ,O00OOO0OO000O0O00 =await cargar_botones_pdf_admision ()#line:732
-    return render_template ('programacion_quirurgica.html',text =OOO0OO00OOOOO00OO ,user_image6 =OO00O000O0OO000O0 ,user_image7 =O00O0O0O0OO00OOO0 )#line:733
-@app .route ("/otros",methods =['GET','POST'])#line:735
-async def otros ():#line:736
-    OOO0OOOO00O00000O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:737
-    O0OOO0O0000OO0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:738
-    O00OOOO000OOOOO00 ,O00OOO00OO0O0OO00 ,O0O0OO0O0O0000OO0 ,O0OOO0000OOOOO000 =await cargar_botones_pdf_admision ()#line:739
-    return render_template ('otros.html',text =O0OOO0000OOOOO000 ,user_image6 =OOO0OOOO00O00000O ,user_image7 =O0OOO0O0000OO0000 )#line:740
-@app .route ("/escuchar_admision1",methods =['GET','POST'])#line:742
-async def escuchar_admision1 ():#line:743
-    O00OOOOO00OOO00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'otros_img.png')#line:744
-    O0OOOO00O0O0O000O =os .path .join (app .config ['UPLOAD_FOLDER'],'programacion_img.png')#line:745
-    OO0OOOOOO000O00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ambulancias_img.jpg')#line:746
-    OO000OOO000OOOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'mapa_camas_img.jpg')#line:747
-    O0O000OOOO00OO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:748
-    OOOOO0O0OO000O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:749
-    O0O0O00OO000OOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:750
-    return render_template ('escuchar_admision1.html',user_image8 =OO000OOO000OOOOOO ,user_image9 =OO0OOOOOO000O00O0 ,user_image10 =O0OOOO00O0O0O000O ,user_image11 =O00OOOOO00OOO00OO ,prediction_text ="Dale a `Escuchar´ y haz tu pregunta",user_image5 =O0O000OOOO00OO0OO ,user_image6 =OOOOO0O0OO000O000 ,user_image7 =O0O0O00OO000OOO0O )#line:751
-@app .route ("/escuchar_admision",methods =['GET','POST'])#line:753
-async def escuchar_admision ():#line:754
-    OO000O0000O0OOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'otros_img.png')#line:755
-    O00OO000OO0OOO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'programacion_img.png')#line:756
-    OO00O00OO0OOO0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'ambulancias_img.jpg')#line:757
-    OOO0000O0OOOO0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'mapa_camas_img.jpg')#line:758
-    O000000000O000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:759
-    O0OO0O0OOO000O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:760
-    OOO0O00O0O000OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:761
-    OOOO0OOO0OO0OOOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:762
-    OO00OOOO00O0O0OOO =takeCommand ()#line:763
-    OO00OOOO00O0O0OOO =str (OO00OOOO00O0O0OOO ).lower ()#line:764
-    OO00OOOO00O0O0OOO =OO00OOOO00O0O0OOO .split ()#line:765
-    O0O00000OOO0OO0O0 ={}#line:766
-    O0O00000OOO0OO0O0 [""]=""#line:767
-    if OO00OOOO00O0O0OOO [0 ]!="none":#line:768
-        OOO0000O0OO00OO00 =1621 #line:769
-        O0OO00OOO0OO0O000 =await cargar_base_datos (OO00OOOO00O0O0OOO ,OOO0000O0OO00OO00 )#line:770
-        O000O0O0O0OO00OOO =await buscar_faq (OO00OOOO00O0O0OOO ,0 )#line:771
-        if O0OO00OOO0OO0O000 ==None :#line:772
-            if len (O000O0O0O0OO00OOO )==0 :#line:773
-                return render_template ('escuchar_admision.html',user_image8 =OOO0000O0OOOO0OOO ,user_image9 =OO00O00OO0OOO0000 ,user_image10 =O00OO000OO0OOO000 ,user_image11 =OO000O0000O0OOOOO ,result_busqueda =O0O00000OOO0OO0O0 ,prediction_text ="No hay resultados para tu busqueda",user_image4 =O000000000O000OO0 ,user_image5 =O0OO0O0OOO000O000 ,user_image6 =OOO0O00O0O000OOOO ,user_image7 =OOOO0OOO0OO0OOOO0 )#line:774
-            else :#line:775
-                return render_template ('escuchar_admision.html',faqs =O000O0O0O0OO00OOO ,faq_titulo ="Preguntas y respuestas: ",user_image8 =OOO0000O0OOOO0OOO ,user_image9 =OO00O00OO0OOO0000 ,user_image10 =O00OO000OO0OOO000 ,user_image11 =OO000O0000O0OOOOO ,result_busqueda =O0O00000OOO0OO0O0 ,user_image4 =O000000000O000OO0 ,user_image5 =O0OO0O0OOO000O000 ,user_image6 =OOO0O00O0O000OOOO ,user_image7 =OOOO0OOO0OO0OOOO0 )#line:776
-        elif len (O0OO00OOO0OO0O000 )>=1 :#line:777
-            OO00O000OOO0OOO0O =[]#line:778
-            O0000O0000OOO0000 =[]#line:779
-            O0O00000OOO0OO0O0 ={}#line:780
-            for OOOOOOOOOOOO00OOO in O0OO00OOO0OO0O000 :#line:781
-                O0000O0000OOO0000 .append (OOOOOOOOOOOO00OOO ["nid"])#line:782
-                for O0O000OOOO0000OOO in O0000O0000OOO0000 :#line:783
-                    OO0O0OO000O00000O =aiohttp .TCPConnector (ssl =True )#line:784
-                    async with aiohttp .ClientSession (connector =OO0O0OO000O00000O )as OO00OO0OO0OOOOOO0 :#line:785
-                        O00000OO0000000OO =await OO00OO0OO0OOOOOO0 .get ('https://orva.tedcas.com/api/intervenciones/'+str (O0O000OOOO0000OOO ),auth =auth )#line:786
-                        O0OO0OOOO0O0000O0 =await O00000OO0000000OO .json ()#line:787
-                        O0OO0OOOO0O0000O0 =O0OO0OOOO0O0000O0 [0 ]#line:788
-                        OOOOOO0OOO00O0O0O =O0OO0OOOO0O0000O0 ['field_pdf']#line:789
-                        OOOOOO0OOO00O0O0O =OOOOOO0OOO00O0O0O [0 ]#line:790
-                        O0O00000OOO0OO0O0 [O0OO0OOOO0O0000O0 ['title']]="https://orva.tedcas.com/"+str (OOOOOO0OOO00O0O0O ['url'])#line:791
-            if len (O000O0O0O0OO00OOO )==0 :#line:792
-                return render_template ('escuchar_admision.html',user_image8 =OOO0000O0OOOO0OOO ,user_image9 =OO00O00OO0OOO0000 ,user_image10 =O00OO000OO0OOO000 ,user_image11 =OO000O0000O0OOOOO ,result_busqueda =O0O00000OOO0OO0O0 ,user_image4 =O000000000O000OO0 ,user_image5 =O0OO0O0OOO000O000 ,user_image6 =OOO0O00O0O000OOOO ,user_image7 =OOOO0OOO0OO0OOOO0 )#line:793
-            else :#line:794
-                return render_template ('escuchar_admision.html',faqs =O000O0O0O0OO00OOO ,faq_titulo ="Preguntas y respuestas: ",user_image8 =OOO0000O0OOOO0OOO ,user_image9 =OO00O00OO0OOO0000 ,user_image10 =O00OO000OO0OOO000 ,user_image11 =OO000O0000O0OOOOO ,result_busqueda =O0O00000OOO0OO0O0 ,user_image4 =O000000000O000OO0 ,user_image5 =O0OO0O0OOO000O000 ,user_image6 =OOO0O00O0O000OOOO ,user_image7 =OOOO0OOO0OO0OOOO0 )#line:795
-    else :#line:796
-        return render_template ('escuchar_admision.html',user_image8 =OOO0000O0OOOO0OOO ,user_image9 =OO00O00OO0OOO0000 ,user_image10 =O00OO000OO0OOO000 ,user_image11 =OO000O0000O0OOOOO ,prediction_text ="No te he entendido bien, dale al boton `Escuchar´ y repite tu pregunta",result_busqueda =O0O00000OOO0OO0O0 ,user_image4 =O000000000O000OO0 ,user_image5 =O0OO0O0OOO000O000 ,user_image6 =OOO0O00O0O000OOOO ,user_image7 =OOOO0OOO0OO0OOOO0 )#line:797
-@app .route ("/buscador_uro",methods =['GET','POST'])#line:799
-async def buscador_uro ():#line:800
-    O0O00OOO0OO0OOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:801
-    OOO000OO0OOO0O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:802
-    OO0O0O000O000O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:803
-    OO00O00O00O0OOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:804
-    OO0000000OO0OO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:805
-    O00O000O00OO0O0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:806
-    OO0000O0OO00OOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:807
-    OOO0OO0OO000OO0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:808
-    O00O000O000O0OO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:809
-    O0OOO000OO00OO0OO =str (request .form .to_dict ())#line:810
-    O0OOO000OO00OO0OO =adaptar_salida (O0OOO000OO00OO0OO )#line:811
-    O0OOO0O0000OO0OOO ={}#line:812
-    O0OOO0O0000OO0OOO [""]=""#line:813
-    if len (O0OOO000OO00OO0OO )==0 :#line:814
-        return render_template ('buscador_uro.html',result_busqueda =O0OOO0O0000OO0OOO ,user_image4 =O0O00OOO0OO0OOO00 ,user_image5 =OOO000OO0OOO0O00O ,user_image6 =OO0O0O000O000O000 ,user_image7 =OO00O00O00O0OOO0O ,user_image8 =OO0000O0OO00OOOOO ,user_image9 =OOO0OO0OO000OO0O0 ,user_image10 =OO0000000OO0OO000 ,user_image11 =O00O000O000O0OO0O ,user_image12 =O00O000O00OO0O0O0 ,nid2 =0 )#line:815
-    elif O0OOO000OO00OO0OO !=None or "{}":#line:816
-        OO0OO0OOOO000OO0O =1620 #line:817
-        OOO000O0000000O00 =await cargar_base_datos (O0OOO000OO00OO0OO ,OO0OO0OOOO000OO0O )#line:818
-        OO0O00OOO0O000O0O =await buscar_faq (O0OOO000OO00OO0OO ,1 )#line:819
-        if OOO000O0000000O00 ==None :#line:820
-            if len (OO0O00OOO0O000O0O )==0 :#line:821
-                return render_template ('buscador_uro.html',result_busqueda =O0OOO0O0000OO0OOO ,prediction_text ="No hay resultados para tu busqueda",user_image4 =O0O00OOO0OO0OOO00 ,user_image5 =OOO000OO0OOO0O00O ,user_image6 =OO0O0O000O000O000 ,user_image7 =OO00O00O00O0OOO0O ,user_image8 =OO0000O0OO00OOOOO ,user_image9 =OOO0OO0OO000OO0O0 ,user_image10 =OO0000000OO0OO000 ,user_image11 =O00O000O000O0OO0O ,user_image12 =O00O000O00OO0O0O0 ,nid2 =0 )#line:822
-            else :#line:823
-                 return render_template ('buscador_uro.html',faqs =OO0O00OOO0O000O0O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O0OOO0O0000OO0OOO ,user_image4 =O0O00OOO0OO0OOO00 ,user_image5 =OOO000OO0OOO0O00O ,user_image6 =OO0O0O000O000O000 ,user_image7 =OO00O00O00O0OOO0O ,user_image8 =OO0000O0OO00OOOOO ,user_image9 =OOO0OO0OO000OO0O0 ,user_image10 =OO0000000OO0OO000 ,user_image11 =O00O000O000O0OO0O ,user_image12 =O00O000O00OO0O0O0 ,nid2 =0 )#line:824
-        elif len (OOO000O0000000O00 )>=1 :#line:825
-            OOO0OO0O000O00OO0 =[]#line:826
-            OO000O0OOOOOOO000 =[]#line:827
-            O0OOO0O0000OO0OOO ={}#line:828
-            for OO0OO0000OO00OO00 in OOO000O0000000O00 :#line:829
-                OOO0OO0O000O00OO0 .append (OO0OO0000OO00OO00 ["title"])#line:830
-                OO000O0OOOOOOO000 .append (OO0OO0000OO00OO00 ["nid"])#line:831
-            for OO0000O0O0OO0000O ,OO0OO0000OO00OO00 in enumerate (OOO0OO0O000O00OO0 ):#line:832
-                 O0OOO0O0000OO0OOO [OO000O0OOOOOOO000 [OO0000O0O0OO0000O ]]=OO0OO0000OO00OO00 #line:833
-            if len (OO0O00OOO0O000O0O )!=0 :#line:834
-                return render_template ('buscador_uro.html',faqs =OO0O00OOO0O000O0O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O0OOO0O0000OO0OOO ,user_image4 =O0O00OOO0OO0OOO00 ,user_image5 =OOO000OO0OOO0O00O ,user_image6 =OO0O0O000O000O000 ,user_image7 =OO00O00O00O0OOO0O ,user_image8 =OO0000O0OO00OOOOO ,user_image9 =OOO0OO0OO000OO0O0 ,user_image10 =OO0000000OO0OO000 ,user_image11 =O00O000O000O0OO0O ,user_image12 =O00O000O00OO0O0O0 ,nid2 =0 )#line:835
-            else :#line:836
-                return render_template ('buscador_uro.html',result_busqueda =O0OOO0O0000OO0OOO ,user_image4 =O0O00OOO0OO0OOO00 ,user_image5 =OOO000OO0OOO0O00O ,user_image6 =OO0O0O000O000O000 ,user_image7 =OO00O00O00O0OOO0O ,user_image8 =OO0000O0OO00OOOOO ,user_image9 =OOO0OO0OO000OO0O0 ,user_image10 =OO0000000OO0OO000 ,user_image11 =O00O000O000O0OO0O ,user_image12 =O00O000O00OO0O0O0 ,nid2 =0 )#line:837
-@app .route ("/resultado_uro",methods =['GET','POST'])#line:839
-async def resultado_uro ():#line:840
-    OOO0O0O0OO0O0O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:841
-    O0000OO0OOO0O0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:842
-    O000O000OO00O00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:843
-    OO0O0OOOO000OO00O =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:844
-    O00OO00O000OO0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:845
-    OO000OO00O000OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:846
-    OO0OOO0O0O0OO0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:847
-    OO000OO0O0OOO000O =request .args .get ('link')#line:848
-    OO0O0O000OO0O0OOO ,OOO00OO0OO00O00O0 =await cargar_tipo (OO000OO0O0OOO000O ,1620 )#line:849
-    OOO00OO00OOOOOO0O =OO0O0O000OO0O0OOO ['title']#line:850
-    if OOO00OO0OO00O00O0 =="Intervencion":#line:851
-        print ("hola1")#line:852
-        OO000000OOOO0O0OO ,O0OO000000OOOOOOO =await cargar_caja (str (OO000OO0O0OOO000O ),'Materiales - Cajas: ')#line:853
-        return render_template ('intervencion_uro.html',user_image8 =O00OO00O000OO0O00 ,user_image9 =OO000OO00O000OOO0 ,user_image10 =O000O000OO00O00O0 ,user_image11 =OO0OOO0O0O0OO0OOO ,user_image12 =OO0O0OOOO000OO00O ,instrumental =OO000000OOOO0O0OO ,texto_cajas =O0OO000000OOOOOOO ,title =OOO00OO00OOOOOO0O ,user_image6 =OOO0O0O0OO0O0O00O ,user_image7 =O0000OO0OOO0O0000 ,nid2 =OO000OO0O0OOO000O )#line:854
-    elif OOO00OO0OO00O00O0 =='Caja':#line:855
-        O0OO0000O0O0OOO0O ,O0OOOO00O00OO0O00 ,OO0O0O0OO0OO0OOO0 =await cargar_archivo ("ubicacion","Ubicacion: ","cajas/"+str (OO000OO0O0OOO000O ))#line:856
-        OOO0O000O0O00OOO0 =await cargar_archivo ("image","Imagen: ","cajas/"+str (OO000OO0O0OOO000O ))#line:857
-        O00O0OO00OO00OO00 ,O0O00OO00OO00000O =await cargar_archivo_grande ("title_material","Material : ","cajas/"+str (OO000OO0O0OOO000O ))#line:858
-        return render_template ('caja_trauma.html',title =OOO00OO00OOOOOO0O ,files_instru =O00O0OO00OO00OO00 ,texto_instru =O0O00OO00OO00000O ,texto_ubi =O0OO0000O0O0OOO0O ,file_texto_ubi =OO0O0O0OO0OO0OOO0 ,file_imagen =OOO0O000O0O00OOO0 ,user_image6 =OOO0O0O0OO0O0O00O ,user_image7 =O0000OO0OOO0O0000 )#line:859
-    elif OOO00OO0OO00O00O0 =='Instrumental':#line:860
-        print ("hola2")#line:861
-        OO0OO000OOOOO00OO =await cargar_instrumental (OO000OO0O0OOO000O ,'listado_completo_cajas/1620')#line:862
-        return render_template ('instrumental_uro.html',cajas =OO0OO000OOOOO00OO ,texto ='El instrumental que buscas esta presente en las siguientes cajas: ',title =OOO00OO00OOOOOO0O ,user_image6 =OOO0O0O0OO0O0O00O ,user_image7 =O0000OO0OOO0O0000 )#line:863
-@app .route ("/protocolos_uro",methods =['GET','POST'])#line:865
-async def protocolos_uro ():#line:866
-    OOOO0OOO0O00000OO =request .args .get ('link2')#line:867
-    O00O0O0O0O0O0OO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:868
-    OOOO00O0O0O0O000O =await boton_word_ppt (1620 ,"field_protocolo",OOOO0OOO0O00000OO )#line:869
-    return render_template ('protocolo.html',protocolos =OOOO00O0O0O0O000O ,user_image7 =O00O0O0O0O0O0OO00 )#line:870
-@app .route ("/guia_visual_uro",methods =['GET','POST'])#line:872
-async def guia_visual_uro ():#line:873
-    OO000O000O00OOOOO =request .args .get ('link2')#line:874
-    O0O00OOO0O0OO0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:875
-    OOOO00OO00OOO000O =await boton_word_ppt (1620 ,"field_guia_visual",OO000O000O00OOOOO )#line:876
-    return render_template ('guia_visual.html',guia_visual =OOOO00OO00OOO000O ,user_image7 =O0O00OOO0O0OO0000 )#line:877
-@app .route ("/pdf_casa_uro",methods =['GET','POST'])#line:879
-async def pdf_casa_uro ():#line:880
-    O00O00O00O00O0O0O =request .args .get ('link2')#line:881
-    OOOO0OO00OO0OOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:882
-    OOO0OO0O00OOO00OO =await boton_pdf_video (1620 ,"field_pdf",O00O00O00O00O0O0O )#line:883
-    return render_template ('pdf_casa_comercial.html',user_image7 =OOOO0OO00OO0OOOOO ,titulos =OOO0OO0O00OOO00OO )#line:884
-@app .route ("/videos_uro",methods =['GET','POST'])#line:886
-async def videos_uro ():#line:887
-    O0O0OOOOOOOO0OO00 =request .args .get ('link2')#line:888
-    OOO0OOO000OO00O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:889
-    OOOO00OO0OOOOOOOO =await boton_pdf_video (1620 ,"field_video",O0O0OOOOOOOO0OO00 )#line:890
-    return render_template ('videos.html',user_image7 =OOO0OOO000OO00O00 ,titulos =OOOO00OO0OOOOOOOO )#line:891
-@app .route ("/materiales_uro",methods =['GET','POST'])#line:893
-async def materiales_uro ():#line:894
-    OO00OOOOOOO000OO0 =request .args .get ('link2')#line:895
-    OO000O00OOO00OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:896
-    OOO0OO0OO0OOO000O =await boton_materiales (1620 ,OO00OOOOOOO000OO0 )#line:897
-    if len (OOO0OO0OO0OOO000O [''])==0 :#line:898
-       return render_template ('materiales_uro.html',user_image7 =OO000O00OOO00OOOO ,cajas =OOO0OO0OO0OOO000O ,no_hay ="No hay materiales")#line:899
-    return render_template ('materiales_uro.html',user_image7 =OO000O00OOO00OOOO ,cajas =OOO0OO0OO0OOO000O )#line:900
-@app .route ("/escuchar_uro1",methods =['GET','POST'])#line:902
-async def escuchar_uro1 ():#line:903
-    O00000O0OO000O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:904
-    O00OO0OOOOO0O0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:905
-    O00OO0OO00OOO000O =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:906
-    OOOOO000000O00O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:907
-    OOOOOOO0OO00O00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:908
-    O00O000O0000O0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:909
-    O0O0O000O00000O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:910
-    O00OOOO0OO0O0O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:911
-    return render_template ('escuchar_uro1.html',nid2 =0 ,prediction_text ="Dale a `Escuchar´ y haz tu pregunta",user_image5 =O00O000O0000O0OO0 ,user_image6 =O0O0O000O00000O0O ,user_image7 =O00OOOO0OO0O0O000 ,user_image8 =O00OO0OO00OOO000O ,user_image9 =OOOOO000000O00O00 ,user_image10 =O00000O0OO000O00O ,user_image11 =OOOOOOO0OO00O00O0 ,user_image12 =O00OO0OOOOO0O0OO0 )#line:912
-@app .route ("/escuchar_uro",methods =['GET','POST'])#line:914
-async def escuchar_uro ():#line:915
-    OOO000OOO0000O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:916
-    O00OO0O000OOO000O =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:917
-    O0OOO0OO0O0OOO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:918
-    OOO000OOO00OO0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:919
-    O00O0O0O0OO0O0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:920
-    OO000O0OO0O000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:921
-    OOOOO00OO00000O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:922
-    OOOOO000O00OO0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:923
-    OOO00OO000OO00O0O =takeCommand ()#line:924
-    OOO00OO000OO00O0O =str (OOO00OO000OO00O0O ).lower ()#line:925
-    OOO00OO000OO00O0O =OOO00OO000OO00O0O .split ()#line:926
-    O00000O0OO0O00O00 ={}#line:927
-    O00000O0OO0O00O00 [""]=""#line:928
-    if OOO00OO000OO00O0O [0 ]!="none":#line:929
-        OOOO0O000OO0O00OO =1620 #line:930
-        OOOOOOOO0O0OO00O0 =await cargar_base_datos (OOO00OO000OO00O0O ,OOOO0O000OO0O00OO )#line:931
-        O0OO000OO00O0000O =await buscar_faq (OOO00OO000OO00O0O ,0 )#line:932
-        if OOOOOOOO0O0OO00O0 ==None :#line:933
-            if len (O0OO000OO00O0000O )==0 :#line:934
-                return render_template ('escuchar_uro.html',nid2 =0 ,result_busqueda =O00000O0OO0O00O00 ,prediction_text ="No hay resultados para tu busqueda",user_image6 =OOOOO00OO00000O0O ,user_image7 =OOOOO000O00OO0OOO ,user_image5 =OO000O0OO0O000OO0 ,user_image8 =O0OOO0OO0O0OOO0OO ,user_image9 =OOO000OOO00OO0000 ,user_image10 =OOO000OOO0000O000 ,user_image11 =O00O0O0O0OO0O0OO0 ,user_image12 =O00OO0O000OOO000O )#line:935
-            else :#line:936
-                return render_template ('escuchar_uro.html',nid2 =0 ,faqs =O0OO000OO00O0000O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O00000O0OO0O00O00 ,user_image6 =OOOOO00OO00000O0O ,user_image7 =OOOOO000O00OO0OOO ,user_image5 =OO000O0OO0O000OO0 ,user_image8 =O0OOO0OO0O0OOO0OO ,user_image9 =OOO000OOO00OO0000 ,user_image10 =OOO000OOO0000O000 ,user_image11 =O00O0O0O0OO0O0OO0 ,user_image12 =O00OO0O000OOO000O )#line:937
-        elif len (OOOOOOOO0O0OO00O0 )>=1 :#line:938
-            O0OO00OO00OO0O0O0 =[]#line:939
-            O0OOO0O0O00OOOO00 =[]#line:940
-            O00000O0OO0O00O00 ={}#line:941
-            for OOOO0OO0OOOOO0000 in OOOOOOOO0O0OO00O0 :#line:942
-                O0OO00OO00OO0O0O0 .append (OOOO0OO0OOOOO0000 ["title"])#line:943
-                O0OOO0O0O00OOOO00 .append (OOOO0OO0OOOOO0000 ["nid"])#line:944
-            for OOOOO0O0O0OOO0OO0 ,OOOO0OO0OOOOO0000 in enumerate (O0OO00OO00OO0O0O0 ):#line:945
-                 O00000O0OO0O00O00 [O0OOO0O0O00OOOO00 [OOOOO0O0O0OOO0OO0 ]]=OOOO0OO0OOOOO0000 #line:946
-            if len (O0OO000OO00O0000O )==0 :#line:948
-                return render_template ('escuchar_uro.html',nid2 =0 ,result_busqueda =O00000O0OO0O00O00 ,user_image6 =OOOOO00OO00000O0O ,user_image7 =OOOOO000O00OO0OOO ,user_image5 =OO000O0OO0O000OO0 ,user_image8 =O0OOO0OO0O0OOO0OO ,user_image9 =OOO000OOO00OO0000 ,user_image10 =OOO000OOO0000O000 ,user_image11 =O00O0O0O0OO0O0OO0 ,user_image12 =O00OO0O000OOO000O )#line:949
-            else :#line:950
-                return render_template ('escuchar_uro.html',nid2 =0 ,faqs =O0OO000OO00O0000O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O00000O0OO0O00O00 ,user_image6 =OOOOO00OO00000O0O ,user_image7 =OOOOO000O00OO0OOO ,user_image5 =OO000O0OO0O000OO0 ,user_image8 =O0OOO0OO0O0OOO0OO ,user_image9 =OOO000OOO00OO0000 ,user_image10 =OOO000OOO0000O000 ,user_image11 =O00O0O0O0OO0O0OO0 ,user_image12 =O00OO0O000OOO000O )#line:951
-    else :#line:952
-        return render_template ('escuchar_uro.html',nid2 =0 ,result_busqueda =O00000O0OO0O00O00 ,prediction_text ="No te he entendido bien, dale al boton `Escuchar´ y repite tu pregunta",user_image5 =OO000O0OO0O000OO0 ,user_image6 =OOOOO00OO00000O0O ,user_image7 =OOOOO000O00OO0OOO ,user_image8 =O0OOO0OO0O0OOO0OO ,user_image9 =OOO000OOO00OO0000 ,user_image10 =OOO000OOO0000O000 ,user_image11 =O00O0O0O0OO0O0OO0 ,user_image12 =O00OO0O000OOO000O )#line:953
-@app .route ("/ajustes")#line:955
-async def ajustes ():#line:956
-    OOO0OOOOO0OOO0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'estrella.png')#line:957
-    return render_template ('ajustes.html',user_image7 =OOO0OOOOO0OOO0O00 )#line:958
-if __name__ =="__main__":#line:960
-    app .run ()#host='0.0.0.0', port=10000, debug=True)#line:961
+nlp =spacy .load ("es_core_news_sm")#line:9
+from inflector import Inflector ,Spanish #line:10
+inflector =Inflector (Spanish )#line:11
+import speech_recognition as sr #line:12
+import os #line:13
+import requests #line:14
+from requests .auth import HTTPBasicAuth #line:15
+import asyncio #line:16
+import aiohttp #line:17
+auth =aiohttp .BasicAuth ('1234','API')#line:19
+base_url ='https://orva.tedcas.com/api/'#line:20
+async def buscar_faq (O000O0OO0O00OOOOO ,OO0O00OOOOOOOOO00 ):#line:22
+    O0OO0OO0O0OO00OOO ="preguntas_qh_tags2.xlsx"#line:23
+    OOOOO0O0O0000OO00 =pd .read_excel (O0OO0OO0O0OO00OOO ,engine ="openpyxl")#line:24
+    OO00000O00O0OO0O0 =0 #line:25
+    O0OO0OO0O0O0O00O0 =O000O0OO0O00OOOOO #line:26
+    O0OO0O0OOOO0O00OO =[]#line:27
+    print ("result"+str (O0OO0OO0O0O0O00O0 ))#line:28
+    for OOOO00OOOO0000O00 ,O00OOOOO0O0OOO000 in OOOOO0O0O0000OO00 .iterrows ():#line:29
+        O0OOO0O0OO000O00O =OOOOO0O0O0000OO00 .loc [OOOO00OOOO0000O00 ,'TAGS2']#line:30
+        O0OOO0O0OO000O00O =O0OOO0O0OO000O00O .split (",")#line:31
+        O0OO0O0OOOO0O00OO .append (O0OOO0O0OO000O00O )#line:32
+    OO000OO0OOOO00000 =[]#line:33
+    O0OOO0O0OO000O00O =[]#line:34
+    for OO0O00OO00OO0OO0O ,OO00OOO0O000OOO00 in enumerate (O0OO0OO0O0O0O00O0 ):#line:35
+        O0OO0OO0O0O0O00O0 [OO0O00OO00OO0OO0O ]=inflector .singularize (str (OO00OOO0O000OOO00 ))#line:36
+    O0OOOOOOOOO00OO00 =np .zeros (len (OOOOO0O0O0000OO00 .index ),dtype =int )#line:37
+    for OO00O000OO0000OOO ,O00OOOOO0O0OOO000 in enumerate (O0OO0O0OOOO0O00OO ):#line:38
+        O00OOO00OOOO000O0 =[]#line:39
+        for OO00OOO0O000OOO00 in O00OOOOO0O0OOO000 :#line:40
+            if OO0O00OOOOOOOOO00 ==0 :#line:41
+                if OO00OOO0O000OOO00 !=[]:#line:42
+                    OO00000O00O0OO0O0 =0 #line:43
+                    for OOOOO0OOO00OOOOO0 in range (100 ):#line:44
+                        OOOOO0OOO00OOOOO0 =OOOOO0OOO00OOOOO0 /10 #line:45
+                        OOOOO0OOO00OOOOO0 =str (OOOOO0OOO00OOOOO0 )#line:46
+                        if OO00OOO0O000OOO00 ==OOOOO0OOO00OOOOO0 :#line:47
+                            OOOOO0OOO00OOOOO0 =OOOOO0OOO00OOOOO0 .split (".")#line:48
+                            O00OOO00OOOO000O0 .append (OOOOO0OOO00OOOOO0 [0 ])#line:49
+                            O00OOO00OOOO000O0 .append ("con")#line:50
+                            O00OOO00OOOO000O0 .append (OOOOO0OOO00OOOOO0 [1 ])#line:51
+                            OO00000O00O0OO0O0 =OO00000O00O0OO0O0 +1 #line:52
+                    if OO00000O00O0OO0O0 ==0 :#line:53
+                        O00OOO00OOOO000O0 .append (OO00OOO0O000OOO00 )#line:54
+            if OO0O00OOOOOOOOO00 ==1 :#line:55
+                O00OOO00OOOO000O0 .append (OO00OOO0O000OOO00 )#line:56
+        OO000OO0OOOO00000 .append (O00OOO00OOOO000O0 )#line:57
+        for OOO0OO0O0000O0OOO in O0OO0OO0O0O0O00O0 :#line:58
+            for O000000OOO00O000O ,OO00OOO0O000OOO00 in enumerate (OO000OO0OOOO00000 [OO00O000OO0000OOO ]):#line:59
+                            if str (OOO0OO0O0000O0OOO )=="maya":#line:60
+                                OOO0OO0O0000O0OOO ="malla"#line:61
+                            if str (OOO0OO0O0000O0OOO )=="pilos"or str (OOO0OO0O0000O0OOO )=="pilo":#line:62
+                                OOO0OO0O0000O0OOO ="philo"#line:63
+                            if str (OOO0OO0O0000O0OOO )=="filos"or str (OOO0OO0O0000O0OOO )=="filo":#line:64
+                                OOO0OO0O0000O0OOO ="philo"#line:65
+                            if str (OOO0OO0O0000O0OOO )=="sinces"or str (OOO0OO0O0000O0OOO )=="sinc":#line:66
+                                OOO0OO0O0000O0OOO ="synthe"#line:67
+                            if str (OOO0OO0O0000O0OOO )=="sintes"or str (OOO0OO0O0000O0OOO )=="sint":#line:68
+                                OOO0OO0O0000O0OOO ="synthe"#line:69
+                            if str (OOO0OO0O0000O0OOO )=="axos"or str (OOO0OO0O0000O0OOO )=="axo":#line:70
+                                OOO0OO0O0000O0OOO ="axso"#line:71
+                            if str (OOO0OO0O0000O0OOO )=="uno":#line:72
+                                OOO0OO0O0000O0OOO ="1"#line:73
+                            if str (OOO0OO0O0000O0OOO )=="dos"or str (OOO0OO0O0000O0OOO )=="do":#line:74
+                                OOO0OO0O0000O0OOO ="2"#line:75
+                            if str (OOO0OO0O0000O0OOO )=="tres"or str (OOO0OO0O0000O0OOO )=="tr":#line:76
+                                OOO0OO0O0000O0OOO ="3"#line:77
+                            if str (OOO0OO0O0000O0OOO )=="cuatro":#line:78
+                                OOO0OO0O0000O0OOO ="4"#line:79
+                            if str (OOO0OO0O0000O0OOO )=="cinco":#line:80
+                                OOO0OO0O0000O0OOO ="5"#line:81
+                            if str (OOO0OO0O0000O0OOO )=="seis"or str (OOO0OO0O0000O0OOO )=="sei":#line:82
+                                OOO0OO0O0000O0OOO ="6"#line:83
+                            if str (OOO0OO0O0000O0OOO )=="siete":#line:84
+                                OOO0OO0O0000O0OOO ="7"#line:85
+                            if str (OOO0OO0O0000O0OOO )=="ocho":#line:86
+                                OOO0OO0O0000O0OOO ="8"#line:87
+                            if str (OOO0OO0O0000O0OOO )=="nueve":#line:88
+                                OOO0OO0O0000O0OOO ="9"#line:89
+                            if str (OOO0OO0O0000O0OOO )=="cero":#line:90
+                                OOO0OO0O0000O0OOO ="0"#line:91
+                            if str (OOO0OO0O0000O0OOO )=="veintiuno":#line:92
+                                OOO0OO0O0000O0OOO ="21"#line:93
+                            if str (OOO0OO0O0000O0OOO )=="veinte":#line:94
+                                OOO0OO0O0000O0OOO ="20"#line:95
+                            if str (OOO0OO0O0000O0OOO )=="veintidos"or str (OOO0OO0O0000O0OOO )=="veintido":#line:96
+                                OOO0OO0O0000O0OOO ="22"#line:97
+                            if str (OOO0OO0O0000O0OOO )=="veintitres"or str (OOO0OO0O0000O0OOO )=="veintitre":#line:98
+                                OOO0OO0O0000O0OOO ="23"#line:99
+                            if str (OOO0OO0O0000O0OOO )=="veinticuatro":#line:100
+                                OOO0OO0O0000O0OOO ="24"#line:101
+                            if str (OOO0OO0O0000O0OOO )=="veinticinco":#line:102
+                                OOO0OO0O0000O0OOO ="25"#line:103
+                            if str (OOO0OO0O0000O0OOO )=="veintiseis"or str (OOO0OO0O0000O0OOO )=="veintisei":#line:104
+                                OOO0OO0O0000O0OOO ="26"#line:105
+                            if str (OOO0OO0O0000O0OOO )=="veintisiete":#line:106
+                                OOO0OO0O0000O0OOO ="27"#line:107
+                            if str (OOO0OO0O0000O0OOO )=="veintiocho":#line:108
+                                OOO0OO0O0000O0OOO ="28"#line:109
+                            if str (OOO0OO0O0000O0OOO )=="veintinueve":#line:110
+                                OOO0OO0O0000O0OOO ="29"#line:111
+                            if str (OOO0OO0O0000O0OOO )=="treinta":#line:112
+                                OOO0OO0O0000O0OOO ="30"#line:113
+                            if str (remove_accents (OO00OOO0O000OOO00 )).lower ()==str (remove_accents (OOO0OO0O0000O0OOO )).lower ():#line:114
+                                O0OOOOOOOOO00OO00 [OO00O000OO0000OOO ]=O0OOOOOOOOO00OO00 [OO00O000OO0000OOO ]+1 #line:115
+                                OO000OO0OOOO00000 [OO00O000OO0000OOO ].pop (O000000OOO00O000O )#line:116
+        O0OOO0O00OOO00O0O =np .argwhere (O0OOOOOOOOO00OO00 ==np .amax (O0OOOOOOOOO00OO00 ))#line:118
+        O00O0O00OOO0OO0OO =[]#line:119
+        OOO000000OO0O0000 ={}#line:120
+        OOOOO0O0O0000OO00 =xlrd .open_workbook (O0OO0OO0O0OO00OOO )#line:121
+        OOOOO0O0O0000OO00 =OOOOO0O0O0000OO00 .sheet_by_index (0 )#line:122
+        if not np .all (O0OOOOOOOOO00OO00 ==0 ):#line:123
+            for OOO0OO0OO0OO00OO0 in O0OOO0O00OOO00O0O :#line:124
+                OOOOOO00000000OOO =OOOOO0O0O0000OO00 .cell (int (OOO0OO0OO0OO00OO0 )+1 ,3 )#line:125
+                OO0OO00O000O0OOO0 =OOOOO0O0O0000OO00 .cell (int (OOO0OO0OO0OO00OO0 )+1 ,4 )#line:126
+                OOOOOO00000000OOO =str (OOOOOO00000000OOO )#line:127
+                OO0OO00O000O0OOO0 =str (OO0OO00O000O0OOO0 )#line:128
+                OOOOOO00000000OOO =OOOOOO00000000OOO .split ("'")#line:129
+                OO0OO00O000O0OOO0 =OO0OO00O000O0OOO0 .split ("'")#line:130
+                O00O0O00OOO0OO0OO .append (f" {OOOOOO00000000OOO[1]} {OO0OO00O000O0OOO0[1]} ")#line:131
+    return O00O0O00OOO0OO0OO #line:132
+async def boton_pdf_video (O0O0000O0OOO0OO00 ,O0O00O0OOOOO00000 ,OO00OO0O0OOOO0O00 ):#line:134
+    OO00OOOOOO0000000 =aiohttp .TCPConnector (ssl =True )#line:135
+    async with aiohttp .ClientSession (connector =OO00OOOOOO0000000 )as O0OO00OO0OOO0O000 :#line:136
+        OOO0OO0OO0OOOOO00 =await O0OO00OO0OOO0O000 .get (f'{base_url}all-content/{O0O0000O0OOO0OO00}',auth =auth )#line:137
+        OOOOO0O0000OO00OO =await OOO0OO0OO0OOOOO00 .json ()#line:138
+        O00000OOO00OOO00O =[]#line:140
+        O00OO0O00O00OO0O0 ={}#line:141
+        if OO00OO0O0OOOO0O00 =="0":#line:143
+            for OOO000O0000OOO00O in OOOOO0O0000OO00OO :#line:144
+                if OOO000O0000OOO00O ['type']=="Intervencion":#line:145
+                    O00000OOO00OOO00O .append (OOO000O0000OOO00O ['nid'])#line:146
+        else :#line:147
+            O00000OOO00OOO00O .append (OO00OO0O0OOOO0O00 )#line:148
+        for O0OOOO0O00000000O in O00000OOO00OOO00O :#line:150
+            O0O0O000000O00O0O =await O0OO00OO0OOO0O000 .get (f'{base_url}intervenciones/{O0OOOO0O00000000O}',auth =auth )#line:151
+            O000O000OO0OOOO00 =await O0O0O000000O00O0O .json ()#line:152
+            O000O000OO0OOOO00 =O000O000OO0OOOO00 [0 ]#line:153
+            O000OOOOO0O000O0O ={}#line:154
+            if O0O00O0OOOOO00000 in O000O000OO0OOOO00 :#line:156
+                O0OO00000OO00OOOO =O000O000OO0OOOO00 [O0O00O0OOOOO00000 ]#line:157
+                for O000O0O0O00OOO000 in O0OO00000OO00OOOO :#line:158
+                    if O0O00O0OOOOO00000 =='field_pdf':#line:159
+                        O000OOOOO0O000O0O [O000O0O0O00OOO000 ['descripcion']]="https://orva.tedcas.com/"+str (O000O0O0O00OOO000 ['url'])#line:160
+                    if O0O00O0OOOOO00000 =='field_video':#line:161
+                        O000OOOOO0O000O0O [O000O0O0O00OOO000 ['descripcion']]=str (O000O0O0O00OOO000 ['url'])#line:162
+                O00OO0O00O00OO0O0 [O000O000OO0OOOO00 ['title']]=O000OOOOO0O000O0O #line:164
+            else :#line:165
+                if OO00OO0O0OOOO0O00 =='0':#line:166
+                    OO00OO0O0OOOO0O00 ='0'#line:167
+                else :#line:168
+                    print ("nid dentro del if "+str (OO00OO0O0OOOO0O00 ))#line:169
+                    O000OOOOO0O000O0O ["No hay archivos"]=""#line:170
+                    O00OO0O00O00OO0O0 ["No hay archivos"]=O000OOOOO0O000O0O #line:171
+        return O00OO0O00O00OO0O0 #line:173
+async def boton_word_ppt (O00O0O0OOOOOO0OOO ,O0O000O0O0O000OOO ,O0O000O00O00O0000 ):#line:175
+    O000O000OOOO0OO00 =aiohttp .TCPConnector (ssl =True )#line:176
+    async with aiohttp .ClientSession (connector =O000O000OOOO0OO00 )as O0O000000000OOOOO :#line:177
+        O0O00O00OO0O0OO0O =await O0O000000000OOOOO .get (f'{base_url}all-content/{O00O0O0OOOOOO0OOO}',auth =auth )#line:178
+        OO0O0OOOO0O0O0O00 =await O0O00O00OO0O0OO0O .json ()#line:179
+        OO0O0OO0O0O00O0O0 =[]#line:181
+        O0OOOO00000O00O00 ={}#line:182
+        if O0O000O00O00O0000 =='0':#line:184
+            for O00OOO00O0O00000O in OO0O0OOOO0O0O0O00 :#line:185
+                if O00OOO00O0O00000O ['type']=="Intervencion":#line:186
+                    OO0O0OO0O0O00O0O0 .append (O00OOO00O0O00000O ['nid'])#line:187
+        else :#line:188
+            OO0O0OO0O0O00O0O0 .append (O0O000O00O00O0000 )#line:189
+        for OOOOO000OOOO0OOO0 in OO0O0OO0O0O00O0O0 :#line:191
+            OO0O00O00OO00000O =await O0O000000000OOOOO .get (f'{base_url}intervenciones/{OOOOO000OOOO0OOO0}',auth =auth )#line:192
+            OOO00OO0OOOO0OOOO =await OO0O00O00OO00000O .json ()#line:193
+            OOO00OO0OOOO0OOOO =OOO00OO0OOOO0OOOO [0 ]#line:194
+            if len (OOO00OO0OOOO0OOOO [O0O000O0O0O000OOO ])!=0 :#line:195
+                O0OOOO00000O00O00 [OOO00OO0OOOO0OOOO ['title']]="https://orva.tedcas.com/"+str (OOO00OO0OOOO0OOOO [O0O000O0O0O000OOO ])#line:196
+            if len (OOO00OO0OOOO0OOOO [O0O000O0O0O000OOO ])==0 and O0O000O00O00O0000 !='0':#line:197
+                O0OOOO00000O00O00 ["No hay archivos"]=""#line:198
+        return O0OOOO00000O00O00 #line:200
+async def boton_materiales (OOOOOO00OOO000O0O ,OO0O00O00O0O0OO00 ):#line:202
+    OOO00OOOOOOOOO00O =aiohttp .TCPConnector (ssl =True )#line:203
+    async with aiohttp .ClientSession (connector =OOO00OOOOOOOOO00O )as O0OOOOO0OO00O000O :#line:204
+        O00O0OO0O0O00O0OO ={}#line:205
+        if OO0O00O00O0O0OO00 =='0':#line:207
+            O0O0000O000O000O0 =await O0OOOOO0OO00O000O .get (f'{base_url}listado_completo_cajas/{OOOOOO00OOO000O0O}',auth =auth )#line:208
+            OOOOOO0OO0O0OOOO0 =await O0O0000O000O000O0 .json ()#line:209
+            for OO0OO0000O0OOO00O in OOOOOO0OO0O0OOOO0 :#line:210
+                O00O0OO0O0O00O0OO [OO0OO0000O0OOO00O ['title']]=OO0OO0000O0OOO00O ['nid']#line:211
+            O00O0OO0O0O00O0OO ['']="si hay"#line:212
+        else :#line:213
+            O0O0000O000O000O0 =await O0OOOOO0OO00O000O .get (f'{base_url}intervenciones/{OO0O00O00O0O0OO00}',auth =auth )#line:214
+            OOOOOO0OO0O0OOOO0 =await O0O0000O000O000O0 .json ()#line:215
+            OOOOOO0OO0O0OOOO0 =OOOOOO0OO0O0OOOO0 [0 ]#line:216
+            if 'field_cajas'in OOOOOO0OO0O0OOOO0 :#line:217
+                OOOOOO0OO0O0OOOO0 =OOOOOO0OO0O0OOOO0 ['field_cajas']#line:218
+                for OO0OO0000O0OOO00O in OOOOOO0OO0O0OOOO0 :#line:219
+                    O00O0OO0O0O00O0OO [OO0OO0000O0OOO00O ['caja']]=OO0OO0000O0OOO00O ['id']#line:220
+                O00O0OO0O0O00O0OO ['']="si hay"#line:221
+            else :#line:222
+                if OO0O00O00O0O0OO00 !=0 :#line:223
+                    O00O0OO0O0O00O0OO ['']=""#line:224
+        return O00O0OO0O0O00O0OO #line:225
+async def cargar_base_datos (O000OO00O0O0OO0OO ,OOOO0OO00OO000O0O ):#line:227
+    O000000OOOOOOO0OO =None #line:228
+    OOOOO0O0O0OO000O0 =[]#line:229
+    OOO0OOOOOO0OO0O0O =aiohttp .TCPConnector (ssl =True )#line:230
+    async with aiohttp .ClientSession (connector =OOO0OOOOOO0OO0O0O )as OO0O0O0O0OOOOO0OO :#line:231
+        OO00OOO000000OO00 =await OO0O0O0O0OOOOO0OO .get ('https://orva.tedcas.com/api/all-content/'+str (OOOO0OO00OO000O0O ),auth =auth )#line:232
+        O0OOO0OOOOO00O00O =await OO00OOO000000OO00 .json ()#line:233
+        OOOO0O0OOOOO000O0 =np .zeros (len (O0OOO0OOOOO00O00O ),dtype =int )#line:234
+        OO0000O0OOO0OO0OO =[]#line:235
+        for OO00O000000O00O0O in O000OO00O0O0OO0OO :#line:236
+            O0OOOO000O0OOOO00 =0 #line:237
+            for O00000O0OO0OOO000 in range (100 ):#line:238
+                O00000O0OO0OOO000 =O00000O0OO0OOO000 /10 #line:239
+                if OO00O000000O00O0O ==str (O00000O0OO0OOO000 ):#line:240
+                    OO00O000000O00O0O =str (O00000O0OO0OOO000 ).split ('.')#line:241
+                    OO0000O0OOO0OO0OO .append (OO00O000000O00O0O )#line:242
+                    O0OOOO000O0OOOO00 =O0OOOO000O0OOOO00 +1 #line:243
+            if OO00O000000O00O0O =='con':#line:244
+                O0OOOO000O0OOOO00 =O0OOOO000O0OOOO00 +1 #line:245
+            if O0OOOO000O0OOOO00 ==0 :#line:246
+                OO0000O0OOO0OO0OO .append (OO00O000000O00O0O )#line:247
+        for O000O0O0OOOO0O0OO in range (len (O0OOO0OOOOO00O00O )):#line:248
+            O0OO0OOO0OO0OO0OO =0 #line:249
+            O0OO00O0O0O0O0OO0 =O0OOO0OOOOO00O00O [O000O0O0OOOO0O0OO ]#line:250
+            O0OOOOOO00O000OO0 =str (O0OO00O0O0O0O0OO0 ['title']).lower ()#line:251
+            O0OOOOOO00O000OO0 =remove_accents (O0OOOOOO00O000OO0 )#line:252
+            O0OOOOOO00O000OO0 =O0OOOOOO00O000OO0 .split (' ')#line:253
+            for OO00000O0O0OO0O00 ,O00OO0000O00O0O0O in enumerate (O0OOOOOO00O000OO0 ):#line:254
+                for O0O00000O0O0O00OO ,O00OO00O0O000OOOO in enumerate (O0OOOOOO00O000OO0 ):#line:255
+                    if O0O00000O0O0O00OO !=OO00000O0O0OO0O00 :#line:256
+                        if O00OO0000O00O0O0O ==O00OO00O0O000OOOO :#line:257
+                            O0OOOOOO00O000OO0 .pop (O0O00000O0O0O00OO )#line:258
+            for OO00000O0O0OO0O00 ,O00OO0000O00O0O0O in enumerate (O0OOOOOO00O000OO0 ):#line:259
+                for O00000O0OO0OOO000 in range (100 ):#line:260
+                    O00000O0OO0OOO000 =O00000O0OO0OOO000 /10 #line:261
+                    if O00OO0000O00O0O0O ==str (O00000O0OO0OOO000 ):#line:262
+                        O00OO0000O00O0O0O =str (O00000O0OO0OOO000 ).split ('.')#line:263
+                        O0OOOOOO00O000OO0 .append (O00OO0000O00O0O0O )#line:264
+                for OOOO0OO00O0OOOO00 in OO0000O0OOO0OO0OO :#line:265
+                            if OOOO0OO00O0OOOO00 =="maya":#line:266
+                                OOOO0OO00O0OOOO00 ="malla"#line:267
+                            if OOOO0OO00O0OOOO00 =="pilos"or OOOO0OO00O0OOOO00 =="pilo":#line:268
+                                OOOO0OO00O0OOOO00 ="philo"#line:269
+                            if OOOO0OO00O0OOOO00 =="filos"or OOOO0OO00O0OOOO00 =="filo":#line:270
+                                OOOO0OO00O0OOOO00 ="philo"#line:271
+                            if OOOO0OO00O0OOOO00 =="sinces"or OOOO0OO00O0OOOO00 =="sinc":#line:272
+                                OOOO0OO00O0OOOO00 ="synthe"#line:273
+                            if OOOO0OO00O0OOOO00 =="sintes"or OOOO0OO00O0OOOO00 =="sint":#line:274
+                                OOOO0OO00O0OOOO00 ="synthe"#line:275
+                            if OOOO0OO00O0OOOO00 =="axos"or OOOO0OO00O0OOOO00 =="axo":#line:276
+                                OOOO0OO00O0OOOO00 ="axso"#line:277
+                            if OOOO0OO00O0OOOO00 =="uno":#line:278
+                                OOOO0OO00O0OOOO00 =1 #line:279
+                            if OOOO0OO00O0OOOO00 =="dos"or OOOO0OO00O0OOOO00 =="do":#line:280
+                                OOOO0OO00O0OOOO00 =2 #line:281
+                            if OOOO0OO00O0OOOO00 =="tres"or OOOO0OO00O0OOOO00 =="tr":#line:282
+                                OOOO0OO00O0OOOO00 =3 #line:283
+                            if OOOO0OO00O0OOOO00 =="cuatro":#line:284
+                                OOOO0OO00O0OOOO00 =4 #line:285
+                            if OOOO0OO00O0OOOO00 =="cinco":#line:286
+                                OOOO0OO00O0OOOO00 =5 #line:287
+                            if OOOO0OO00O0OOOO00 =="seis"or OOOO0OO00O0OOOO00 =="sei":#line:288
+                                OOOO0OO00O0OOOO00 =6 #line:289
+                            if OOOO0OO00O0OOOO00 =="siete":#line:290
+                                OOOO0OO00O0OOOO00 =7 #line:291
+                            if OOOO0OO00O0OOOO00 =="ocho":#line:292
+                                OOOO0OO00O0OOOO00 =8 #line:293
+                            if OOOO0OO00O0OOOO00 =="nueve":#line:294
+                                OOOO0OO00O0OOOO00 =9 #line:295
+                            if OOOO0OO00O0OOOO00 =="cero":#line:296
+                                OOOO0OO00O0OOOO00 =0 #line:297
+                            if OOOO0OO00O0OOOO00 =="veintiuno":#line:298
+                                OOOO0OO00O0OOOO00 ="21"#line:299
+                            if OOOO0OO00O0OOOO00 =="veinte":#line:300
+                                OOOO0OO00O0OOOO00 ="20"#line:301
+                            if OOOO0OO00O0OOOO00 =="veintidos"or OOOO0OO00O0OOOO00 =="veintido":#line:302
+                                OOOO0OO00O0OOOO00 ="22"#line:303
+                            if OOOO0OO00O0OOOO00 =="veintitres"or OOOO0OO00O0OOOO00 =="veintitre":#line:304
+                                OOOO0OO00O0OOOO00 ="23"#line:305
+                            if OOOO0OO00O0OOOO00 =="veinticuatro":#line:306
+                                OOOO0OO00O0OOOO00 ="24"#line:307
+                            if OOOO0OO00O0OOOO00 =="veinticinco":#line:308
+                                OOOO0OO00O0OOOO00 ="25"#line:309
+                            if OOOO0OO00O0OOOO00 =="veintiseis"or OOOO0OO00O0OOOO00 =="veintisei":#line:310
+                                OOOO0OO00O0OOOO00 ="26"#line:311
+                            if OOOO0OO00O0OOOO00 =="veintisiete":#line:312
+                                OOOO0OO00O0OOOO00 ="27"#line:313
+                            if OOOO0OO00O0OOOO00 =="veintiocho":#line:314
+                                OOOO0OO00O0OOOO00 ="28"#line:315
+                            if OOOO0OO00O0OOOO00 =="veintinueve":#line:316
+                                OOOO0OO00O0OOOO00 ="29"#line:317
+                            if OOOO0OO00O0OOOO00 =="treinta":#line:318
+                                OOOO0OO00O0OOOO00 ="30"#line:319
+                            if type (OOOO0OO00O0OOOO00 )==int and type (O000000OOOOOOO0OO )==int :#line:320
+                                O00000O0OO0OOO000 =str (O000000OOOOOOO0OO )+'.'+str (OOOO0OO00O0OOOO00 )#line:321
+                                OOOO0OO00O0OOOO00 =O00000O0OO0OOO000 .split ('.')#line:322
+                            O000000OOOOOOO0OO =OOOO0OO00O0OOOO00 #line:323
+                            OOOO0OO00O0OOOO00 =inflector .singularize (str (OOOO0OO00O0OOOO00 ))#line:324
+                            O00OO0000O00O0O0O =inflector .singularize (str (O00OO0000O00O0O0O ))#line:325
+                            OOOO0OO00O0OOOO00 =remove_accents (OOOO0OO00O0OOOO00 )#line:326
+                            if O00OO0000O00O0O0O ==OOOO0OO00O0OOOO00 :#line:327
+                                O0OO0OOO0OO0OO0OO =O0OO0OOO0OO0OO0OO +1 #line:328
+            OOOO0O0OOOOO000O0 [O000O0O0OOOO0O0OO ]=O0OO0OOO0OO0OO0OO #line:329
+        O0O0OO0O000OO0O00 =np .argwhere (OOOO0O0OOOOO000O0 ==np .amax (OOOO0O0OOOOO000O0 ))#line:330
+        for O000O0O0OOOO0O0OO in O0O0OO0O000OO0O00 :#line:331
+            OOOOO0O0O0OO000O0 .append (O0OOO0OOOOO00O00O [int (O000O0O0OOOO0O0OO )])#line:332
+        if np .all (OOOO0O0OOOOO000O0 ==0 ):#line:333
+            OOOOO0O0O0OO000O0 =None #line:334
+    return OOOOO0O0O0OO000O0 #line:335
+async def cargar_tipo (O00OOO000OOO000OO ,O0O00OO0O0OOO0OO0 ):#line:337
+    OOOO0O0OO00OO0000 =aiohttp .TCPConnector (ssl =True )#line:338
+    async with aiohttp .ClientSession (connector =OOOO0O0OO00OO0000 )as O0OOOO0OOO00OO00O :#line:339
+        O0000O000OOO00OOO =await O0OOOO0OOO00OO00O .get (f'{base_url}all-content/{O0O00OO0O0OOO0OO0}',auth =auth )#line:340
+        O0OOOOO00000OO0OO =await O0000O000OOO00OOO .json ()#line:341
+        OOOO0O000O00OO0OO =None #line:342
+        O00O0OOO000O0O00O =None #line:343
+        for OO0OOO00OO0OOO00O in O0OOOOO00000OO0OO :#line:344
+            if O00OOO000OOO000OO ==OO0OOO00OO0OOO00O ["nid"]:#line:345
+                OOOO0O000O00OO0OO =OO0OOO00OO0OOO00O ["type"]#line:346
+                O00O0OOO000O0O00O =OO0OOO00OO0OOO00O #line:347
+                break #line:348
+    return O00O0OOO000O0O00O ,OOOO0O000O00OO0OO #line:349
+async def cargar_archivo (OOOOO0O000O000OOO ,O0OOO000O0O0O0OO0 ,O00O0O0000O000OOO ):#line:351
+    O000O0O0O0OOO0O0O =[]#line:352
+    OO00000000OOO0OOO =aiohttp .TCPConnector (ssl =True )#line:353
+    async with aiohttp .ClientSession (connector =OO00000000OOO0OOO )as OOOOOOOOOOO0O00OO :#line:354
+        OO0OOOOOO0OO00000 =await OOOOOOOOOOO0O00OO .get ('https://orva.tedcas.com/api/'+str (O00O0O0000O000OOO ),auth =auth )#line:355
+        OOOOOOO0000O0O000 =await OO0OOOOOO0OO00000 .json ()#line:356
+        OOOOOOO0000O0O000 =OOOOOOO0000O0O000 [0 ]#line:357
+        OOO000O0OOO00O00O ="field_"+str (OOOOO0O000O000OOO )#line:358
+        OOO00O0O00OO0OOO0 =OOOOOOO0000O0O000 [OOO000O0OOO00O00O ]#line:359
+        if OOO000O0OOO00O00O =="field_image":#line:360
+            OOOOOOO0000O0O000 =OOOOOOO0000O0O000 ['field_image']#line:361
+            OOOOOOO0000O0O000 =OOOOOOO0000O0O000 .split (',')#line:362
+            OOOOOOO0000O0O000 =[OO00OO0O0O0000OO0 .replace (' ','')for OO00OO0O0O0000OO0 in OOOOOOO0000O0O000 ]#line:363
+            for OO0O0OOO0OO0OOO0O in OOOOOOO0000O0O000 :#line:364
+                 O000O0O0O0OOO0O0O .append ("https://orva.tedcas.com/"+str (OO0O0OOO0OO0OOO0O ))#line:365
+            print (O000O0O0O0OOO0O0O )#line:366
+            return O000O0O0O0OOO0O0O #line:367
+        if len (OOO00O0O00OO0OOO0 )==0 :#line:368
+             O00OOOO00OOO0O000 ="No hay archivos subidos"#line:369
+             O000O0O0O0OOO0O0O ="https://quirohelp.onrender.com/especialidad"#line:370
+        elif type (OOO00O0O00OO0OOO0 )==str :#line:371
+             O000O0O0O0OOO0O0O ="https://orva.tedcas.com/"+str (OOO00O0O00OO0OOO0 )#line:372
+             O00OOOO00OOO0O000 =OOO00O0O00OO0OOO0 #line:373
+        elif type (OOO00O0O00OO0OOO0 )==list :#line:374
+            for OO000O0OOO00O0000 ,O00000000OO0O0O00 in OOO00O0O00OO0OOO0 :#line:375
+                O000O0O0O0OOO0O0O [OO000O0OOO00O0000 ]="https://orva.tedcas.com/"+str (O00000000OO0O0O00 )#line:376
+                O00OOOO00OOO0O000 =OOO00O0O00OO0OOO0 #line:377
+        return O0OOO000O0O0O0OO0 ,O000O0O0O0OOO0O0O ,O00OOOO00OOO0O000 #line:378
+async def cargar_archivo_grande (O0OO000O0OO0O0OO0 ,O00O0O0O00O0000O0 ,O0O00O00O000O0OOO ):#line:380
+    OO000OO000OO00O00 =aiohttp .TCPConnector (ssl =True )#line:381
+    async with aiohttp .ClientSession (connector =OO000OO000OO00O00 )as OO0OOOO00OOO0O00O :#line:382
+        OOOO0OOOO00OOOOO0 =await OO0OOOO00OOO0O00O .get ('https://orva.tedcas.com/api/'+str (O0O00O00O000O0OOO ),auth =auth )#line:383
+        O00O0OOO0O0O00000 =await OOOO0OOOO00OOOOO0 .json ()#line:384
+        O000OOO0OO000OOO0 ={}#line:385
+        if O0OO000O0OO0O0OO0 =='title_material':#line:386
+            for O0O0O00OOOO000OO0 in O00O0OOO0O0O00000 :#line:387
+                  O000OOO0OO000OOO0 [O0O0O00OOOO000OO0 [O0OO000O0OO0O0OO0 ]]=(O0O0O00OOOO000OO0 [O0OO000O0OO0O0OO0 ])#line:388
+            return O000OOO0OO000OOO0 ,O00O0O0O00O0000O0 #line:389
+        O00O0OOO0O0O00000 =O00O0OOO0O0O00000 [0 ]#line:390
+        O00OOOO0000O00000 ="field_"+str (O0OO000O0OO0O0OO0 )#line:391
+        O00OOOO0000O00000 =O00O0OOO0O0O00000 [O00OOOO0000O00000 ]#line:392
+        if len (O00OOOO0000O00000 )==0 :#line:393
+             O000OOO0OO000OOO0 ["No hay archivos"]="https://quirohelp.onrender.com/especialidad"#line:394
+        else :#line:395
+            for O0O0O00OOOO000OO0 in O00OOOO0000O00000 :#line:396
+                O000OOO0OO000OOO0 [O0O0O00OOOO000OO0 ['descripcion']]="https://orva.tedcas.com/"+str (O0O0O00OOOO000OO0 ['url'])#line:397
+        return O00O0O0O00O0000O0 ,O000OOO0OO000OOO0 #line:398
+async def cargar_caja (O000O0O0O000OOO0O ,OO00O00OOOO000000 ):#line:400
+    O00OOO00000OOO0OO ={}#line:401
+    O00O00OO0000O0O00 =aiohttp .TCPConnector (ssl =True )#line:402
+    async with aiohttp .ClientSession (connector =O00O00OO0000O0O00 )as OO0O0O0O00OOOO00O :#line:403
+        OOO000OOOOO00OO00 =await OO0O0O0O00OOOO00O .get (f'{base_url}intervenciones/{O000O0O0O000OOO0O}',auth =auth )#line:404
+        O0OO000OOO000OO00 =await OOO000OOOOO00OO00 .json ()#line:405
+        O0OO000OOO000OO00 =O0OO000OOO000OO00 [0 ]#line:406
+    if 'field_cajas'in O0OO000OOO000OO00 :#line:407
+        O0OO000OOO000OO00 =O0OO000OOO000OO00 ['field_cajas']#line:408
+        for O00000O0O0O0OOOO0 in O0OO000OOO000OO00 :#line:409
+            O00OOO00000OOO0OO [O00000O0O0O0OOOO0 ['id']]=O00000O0O0O0OOOO0 ['caja']#line:410
+    else :#line:411
+        O00OOO00000OOO0OO [str (O000O0O0O000OOO0O )]="No hay archivos"#line:412
+    return O00OOO00000OOO0OO ,OO00O00OOOO000000 #line:413
+async def cargar_instrumental (OOOO0OOO0O00OOOO0 ,OOOOOO0OOO0OO0000 ):#line:415
+    OOO0OOOOO000O0OOO ={}#line:416
+    OO00O00O000O0OO0O =aiohttp .TCPConnector (ssl =True )#line:417
+    async with aiohttp .ClientSession (connector =OO00O00O000O0OO0O )as O0O0OOOOOOO00O000 :#line:418
+        O0O00O0O00O0OOOO0 =await O0O0OOOOOOO00O000 .get ('https://orva.tedcas.com/api/'+str (OOOOOO0OOO0OO0000 ),auth =auth )#line:419
+        OO0O00OOO00OO000O =await O0O00O0O00O0OOOO0 .json ()#line:420
+        for O0O00OOOO0000O00O in OO0O00OOO00OO000O :#line:421
+         if 'instrumental'in O0O00OOOO0000O00O :#line:422
+            for O0OO0000000O000OO in O0O00OOOO0000O00O ['instrumental']:#line:423
+                if O0OO0000000O000OO ['id']==OOOO0OOO0O00OOOO0 :#line:424
+                    OOO0OOOOO000O0OOO [O0O00OOOO0000O00O ['nid']]=O0O00OOOO0000O00O ['title']#line:425
+    return OOO0OOOOO000O0OOO #line:426
+async def cargar_botones_pdf_admision ():#line:428
+    O00000O00O0O00000 ={}#line:429
+    O00OO00O00O0O0OOO ={}#line:430
+    O0OO0OO0O0OOOO0OO ={}#line:431
+    OO0O00OO0O00O0O00 ={}#line:432
+    O0O00O000000O00O0 =aiohttp .TCPConnector (ssl =True )#line:433
+    async with aiohttp .ClientSession (connector =O0O00O000000O00O0 )as OO0OOOO0OO0OOO0O0 :#line:434
+        OO000O0OOOOOOO000 =await OO0OOOO0OO0OOO0O0 .get ('https://orva.tedcas.com/api/all-content/1621',auth =auth )#line:435
+        O0OOO0OOOO000OOOO =await OO000O0OOOOOOO000 .json ()#line:436
+        for O00O00000OO0O00O0 in O0OOO0OOOO000OOOO :#line:437
+            O000O0O0O0O000000 =await OO0OOOO0OO0OOO0O0 .get ('https://orva.tedcas.com/api/intervenciones/'+str (O00O00000OO0O00O0 ['nid']),auth =auth )#line:438
+            O00O00OO0OOOO000O =await O000O0O0O0O000000 .json ()#line:439
+            O00O00OO0OOOO000O =O00O00OO0OOOO000O [0 ]#line:440
+            OOO000OO00O0OOOOO =O00O00OO0OOOO000O ['field_pdf']#line:441
+            OOO000OO00O0OOOOO =OOO000OO00O0OOOOO [0 ]#line:442
+            if O00O00OO0OOOO000O ['field_tecnica']=="Mapa de camas":#line:443
+                O00000O00O0O00000 [O00O00OO0OOOO000O ['title']]="https://orva.tedcas.com/"+str (OOO000OO00O0OOOOO ['url'])#line:444
+            elif O00O00OO0OOOO000O ['field_tecnica']=="Ambulancias":#line:445
+                O00OO00O00O0O0OOO [O00O00OO0OOOO000O ['title']]="https://orva.tedcas.com/"+str (OOO000OO00O0OOOOO ['url'])#line:446
+            elif O00O00OO0OOOO000O ['field_tecnica']=="Programación quirúrgica":#line:447
+                O0OO0OO0O0OOOO0OO [O00O00OO0OOOO000O ['title']]="https://orva.tedcas.com/"+str (OOO000OO00O0OOOOO ['url'])#line:448
+            elif O00O00OO0OOOO000O ['field_tecnica']=="Otros":#line:449
+                OO0O00OO0O00O0O00 [O00O00OO0OOOO000O ['title']]="https://orva.tedcas.com/"+str (OOO000OO00O0OOOOO ['url'])#line:450
+    return O00000O00O0O00000 ,O00OO00O00O0O0OOO ,O0OO0OO0O0OOOO0OO ,OO0O00OO0O00O0O00 #line:451
+def remove_accents (OOO000O0O00O0OO00 ):#line:453
+    O0OOO00OO0OO0O0O0 =unicodedata .normalize ('NFKD',OOO000O0O00O0OO00 )#line:454
+    return u"".join ([OO00000O0OOOOO0OO for OO00000O0OOOOO0OO in O0OOO00OO0OO0O0O0 if not unicodedata .combining (OO00000O0OOOOO0OO )])#line:455
+def adaptar_salida (O0OO0OO0OO000O00O ):#line:457
+    OOO00O0O0O0OOOOO0 =[]#line:458
+    O0OO0OO0OO000O00O =str (O0OO0OO0OO000O00O ).lower ()#line:459
+    O0OO0OO0OO000O00O =O0OO0OO0OO000O00O .split ("}")#line:460
+    O0OO0OO0OO000O00O =O0OO0OO0OO000O00O [0 ].split (":")#line:461
+    if len (O0OO0OO0OO000O00O )>=2 :#line:462
+        OOOOO0000OOO0OOO0 =O0OO0OO0OO000O00O [1 ].split ("'")#line:463
+        OOO00O0O0O0OOOOO0 =OOOOO0000OOO0OOO0 [1 ].split ()#line:464
+    return OOO00O0O0O0OOOOO0 #line:465
+def takeCommand ():#line:467
+    OOO00OO0OO0O0OO0O =sr .Recognizer ()#line:468
+    with sr .Microphone ()as O00OO000O0000OO00 :#line:469
+        print ("Listening...")#line:470
+        OOO00OO0OO0O0OO0O .pause_threshold =1 #line:471
+        O00OOOOOOOOOO0OO0 =OOO00OO0OO0O0OO0O .adjust_for_ambient_noise (O00OO000O0000OO00 )#line:472
+        O00OOOOOOOOOO0OO0 =OOO00OO0OO0O0OO0O .listen (O00OO000O0000OO00 )#line:473
+    try :#line:474
+        print ("Recognizing...")#line:475
+        OOOO0OO00O0OO0OO0 =OOO00OO0OO0O0OO0O .recognize_google (O00OOOOOOOOOO0OO0 ,language ='es-ES')#line:476
+        print (f"User said: {OOOO0OO00O0OO0OO0}\n")#line:477
+    except Exception as O00OO00OOOOO00O0O :#line:478
+        print (O00OO00OOOOO00O0O )#line:479
+        print ("Unable to Recognize your voice.")#line:480
+        return "none"#line:481
+    return OOOO0OO00O0OO0OO0 #line:482
+app =Flask (__name__ )#line:484
+app .config ['SECRET_KEY']='mysecretkey'#line:485
+IMG_FOLDER =os .path .join ('static','IMG')#line:487
+app .config ['UPLOAD_FOLDER']=IMG_FOLDER #line:488
+@app .route ("/")#line:490
+async def hello ():#line:491
+    OOOOOOO000OO0O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'trauma.jpeg')#line:492
+    O00OO0O00OOO000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'uro.jpeg')#line:493
+    O0O0O0OOO0000OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'adm.jpeg')#line:494
+    O0000O0OO0OO0O0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'tijerass.png')#line:495
+    return render_template ('especialidad.html',user_image0 =O0000O0OO0OO0O0O0 ,user_image1 =OOOOOOO000OO0O00O ,user_image2 =O00OO0O00OOO000O0 ,user_image3 =O0O0O0OOO0000OOOO )#line:496
+@app .route ("/especialidad")#line:498
+async def especialidad ():#line:499
+    O0O00OOOOOOOOOOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'trauma.jpeg')#line:500
+    O0OOO000OO0O0000O =os .path .join (app .config ['UPLOAD_FOLDER'],'uro.jpeg')#line:501
+    O0O000O00OOOOO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'adm.jpeg')#line:502
+    O0OO00OO0O0OO0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'tijerass.png')#line:503
+    return render_template ('especialidad.html',user_image0 =O0OO00OO0O0OO0OO0 ,user_image1 =O0O00OOOOOOOOOOO0 ,user_image2 =O0OOO000OO0O0000O ,user_image3 =O0O000O00OOOOO0OO )#line:504
+@app .route ("/seleccion_trauma",methods =['GET','POST'])#line:506
+async def seleccion_trauma ():#line:507
+    OOOO0OOOOOO0OO0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:508
+    OO00O0OO0O000000O =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:509
+    OO0O0O000O00O0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:510
+    OOO0000000O00O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:511
+    return render_template ('seleccion_trauma.html',user_image4 =OOOO0OOOOOO0OO0O0 ,user_image5 =OO00O0OO0O000000O ,user_image6 =OO0O0O000O00O0OO0 ,user_image7 =OOO0000000O00O000 )#line:512
+@app .route ("/buscador_trauma",methods =['GET','POST'])#line:514
+async def buscador_trauma ():#line:515
+    OO00OO0OOO0000O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:516
+    O00O0O0000O000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:517
+    O0O0O000O0OO00OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:518
+    O00OOOOOO000OOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:519
+    OOO0OOOO000O00OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:520
+    O0OO000O0000000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:521
+    O00000O0O0O00OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:522
+    OOO0OOO00O0OOO00O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:523
+    O0O000OOOO00OOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:524
+    O0000OOO00OO0OOO0 =str (request .form .to_dict ())#line:525
+    O0000OOO00OO0OOO0 =adaptar_salida (O0000OOO00OO0OOO0 )#line:526
+    OO00000OO0OO0OOO0 ={}#line:527
+    OO00000OO0OO0OOO0 [""]=""#line:528
+    if len (O0000OOO00OO0OOO0 )==0 :#line:529
+        return render_template ('buscador_trauma.html',result_busqueda =OO00000OO0OO0OOO0 ,user_image4 =OO00OO0OOO0000O00 ,user_image5 =O00O0O0000O000OO0 ,user_image6 =O0O0O000O0OO00OOO ,user_image7 =O00OOOOOO000OOOOO ,user_image8 =O00000O0O0O00OOOO ,user_image9 =OOO0OOO00O0OOO00O ,user_image10 =OOO0OOOO000O00OO0 ,user_image11 =O0O000OOOO00OOO00 ,user_image12 =O0OO000O0000000O0 ,nid2 =0 )#line:530
+    elif O0000OOO00OO0OOO0 !=None or "{}":#line:531
+        O0O000OOO0OOO00OO =1 #line:532
+        O0O000O0O0OO00O0O =await cargar_base_datos (O0000OOO00OO0OOO0 ,O0O000OOO0OOO00OO )#line:533
+        O0O00OOO000000O0O =await buscar_faq (O0000OOO00OO0OOO0 ,1 )#line:534
+        if O0O000O0O0OO00O0O ==None :#line:535
+            if len (O0O00OOO000000O0O )==0 :#line:536
+                return render_template ('buscador_trauma.html',result_busqueda =OO00000OO0OO0OOO0 ,prediction_text ="No hay resultados para tu busqueda",user_image4 =OO00OO0OOO0000O00 ,user_image5 =O00O0O0000O000OO0 ,user_image6 =O0O0O000O0OO00OOO ,user_image7 =O00OOOOOO000OOOOO ,user_image8 =O00000O0O0O00OOOO ,user_image9 =OOO0OOO00O0OOO00O ,user_image10 =OOO0OOOO000O00OO0 ,user_image11 =O0O000OOOO00OOO00 ,user_image12 =O0OO000O0000000O0 ,nid2 =0 )#line:537
+            else :#line:538
+                 return render_template ('buscador_trauma.html',faqs =O0O00OOO000000O0O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OO00000OO0OO0OOO0 ,user_image4 =OO00OO0OOO0000O00 ,user_image5 =O00O0O0000O000OO0 ,user_image6 =O0O0O000O0OO00OOO ,user_image7 =O00OOOOOO000OOOOO ,user_image8 =O00000O0O0O00OOOO ,user_image9 =OOO0OOO00O0OOO00O ,user_image10 =OOO0OOOO000O00OO0 ,user_image11 =O0O000OOOO00OOO00 ,user_image12 =O0OO000O0000000O0 ,nid2 =0 )#line:539
+        elif len (O0O000O0O0OO00O0O )>=1 :#line:540
+            OO00O0OO000OOO00O =[]#line:541
+            O0OOO00OOOOO0000O =[]#line:542
+            OO00000OO0OO0OOO0 ={}#line:543
+            for O0OOO00OO00OO0OO0 in O0O000O0O0OO00O0O :#line:544
+                OO00O0OO000OOO00O .append (O0OOO00OO00OO0OO0 ["title"])#line:545
+                O0OOO00OOOOO0000O .append (O0OOO00OO00OO0OO0 ["nid"])#line:546
+            for O0OO0OO00OOOOOO00 ,O0OOO00OO00OO0OO0 in enumerate (OO00O0OO000OOO00O ):#line:547
+                 OO00000OO0OO0OOO0 [O0OOO00OOOOO0000O [O0OO0OO00OOOOOO00 ]]=O0OOO00OO00OO0OO0 #line:548
+            if len (O0O00OOO000000O0O )!=0 :#line:550
+                return render_template ('buscador_trauma.html',faqs =O0O00OOO000000O0O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OO00000OO0OO0OOO0 ,user_image4 =OO00OO0OOO0000O00 ,user_image5 =O00O0O0000O000OO0 ,user_image6 =O0O0O000O0OO00OOO ,user_image7 =O00OOOOOO000OOOOO ,user_image8 =O00000O0O0O00OOOO ,user_image9 =OOO0OOO00O0OOO00O ,user_image10 =OOO0OOOO000O00OO0 ,user_image11 =O0O000OOOO00OOO00 ,user_image12 =O0OO000O0000000O0 ,nid2 =0 )#line:551
+            else :#line:552
+                return render_template ('buscador_trauma.html',result_busqueda =OO00000OO0OO0OOO0 ,user_image4 =OO00OO0OOO0000O00 ,user_image5 =O00O0O0000O000OO0 ,user_image6 =O0O0O000O0OO00OOO ,user_image7 =O00OOOOOO000OOOOO ,user_image8 =O00000O0O0O00OOOO ,user_image9 =OOO0OOO00O0OOO00O ,user_image10 =OOO0OOOO000O00OO0 ,user_image11 =O0O000OOOO00OOO00 ,user_image12 =O0OO000O0000000O0 ,nid2 =0 )#line:553
+@app .route ("/resultado_trauma",methods =['GET','POST'])#line:555
+async def resultado_trauma ():#line:556
+    OO0OO0O0OO0O00O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:557
+    OOOOO0000OO0O000O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:558
+    O00OO0OO00OO0O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:559
+    O00O000OO0O0000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:560
+    OOOO0OO0OO000O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:561
+    O000O0O0000O0O000 =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:562
+    OOOO00OO000OOO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:563
+    OO0O0OOO00OOO0OOO =request .args .get ('link')#line:564
+    OOO0OO00O000O0OO0 ,OO0OOOOOO0000O0OO =await cargar_tipo (OO0O0OOO00OOO0OOO ,1 )#line:565
+    O0O00O0O0OOO00O0O =OOO0OO00O000O0OO0 ['title']#line:566
+    if OO0OOOOOO0000O0OO =="Intervencion":#line:568
+        OO0O00OO0O0O0O0O0 ,OOO0OO0OO0O00OO00 =await cargar_caja (str (OO0O0OOO00OOO0OOO ),'Materiales - Cajas: ')#line:569
+        return render_template ('intervencion_trauma.html',user_image8 =OOOO0OO0OO000O000 ,user_image9 =O000O0O0000O0O000 ,user_image10 =O00OO0OO00OO0O000 ,user_image11 =OOOO00OO000OOO0OO ,user_image12 =O00O000OO0O0000O0 ,instrumental =OO0O00OO0O0O0O0O0 ,texto_cajas =OOO0OO0OO0O00OO00 ,title =O0O00O0O0OOO00O0O ,user_image6 =OO0OO0O0OO0O00O00 ,user_image7 =OOOOO0000OO0O000O ,nid2 =OO0O0OOO00OOO0OOO )#line:570
+    elif OO0OOOOOO0000O0OO =='Caja':#line:571
+        O0OOOO0O000O0O00O ,OOOOO00O0OOOO00OO ,O000O0O000O00OO0O =await cargar_archivo ("ubicacion","Ubicacion: ","cajas/"+str (OO0O0OOO00OOO0OOO ))#line:572
+        O0OOO00O0OOO00OO0 =await cargar_archivo ("image","Imagen: ","cajas/"+str (OO0O0OOO00OOO0OOO ))#line:573
+        OO0000OO0O0O00000 ,OO00O0O000O0OO0O0 =await cargar_archivo_grande ("title_material","Material : ","cajas/"+str (OO0O0OOO00OOO0OOO ))#line:574
+        return render_template ('caja_trauma.html',title =O0O00O0O0OOO00O0O ,files_instru =OO0000OO0O0O00000 ,texto_instru =OO00O0O000O0OO0O0 ,texto_ubi =O0OOOO0O000O0O00O ,file_texto_ubi =O000O0O000O00OO0O ,file_imagen =O0OOO00O0OOO00OO0 ,user_image6 =OO0OO0O0OO0O00O00 ,user_image7 =OOOOO0000OO0O000O )#line:575
+    elif OO0OOOOOO0000O0OO =='Instrumental':#line:576
+        OOO0OOOO0OOOOOO00 =await cargar_instrumental (OO0O0OOO00OOO0OOO ,'listado_completo_cajas/1')#line:577
+        return render_template ('instrumental_trauma.html',cajas =OOO0OOOO0OOOOOO00 ,texto ='El instrumental que buscas esta presente en las siguientes cajas: ',title =O0O00O0O0OOO00O0O ,user_image6 =OO0OO0O0OO0O00O00 ,user_image7 =OOOOO0000OO0O000O )#line:578
+@app .route ("/protocolos_trauma",methods =['GET','POST'])#line:580
+async def protocolos_trauma ():#line:581
+    OO00OO0O0OO00O00O =request .args .get ('link2')#line:582
+    OO00OOOOO0OOO0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:583
+    OOOO0000O0OO00O0O =await boton_word_ppt (1 ,"field_protocolo",OO00OO0O0OO00O00O )#line:584
+    return render_template ('protocolo.html',protocolos =OOOO0000O0OO00O0O ,user_image7 =OO00OOOOO0OOO0OO0 )#line:585
+@app .route ("/guia_visual_trauma",methods =['GET','POST'])#line:587
+async def guia_visual_trauma ():#line:588
+    O000O0OOO000O000O =request .args .get ('link2')#line:589
+    O0O000OO000O00000 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:590
+    OO00O0OO00O0O0OOO =await boton_word_ppt (1 ,"field_guia_visual",O000O0OOO000O000O )#line:591
+    return render_template ('guia_visual.html',guia_visual =OO00O0OO00O0O0OOO ,user_image7 =O0O000OO000O00000 )#line:592
+@app .route ("/pdf_casa_trauma",methods =['GET','POST'])#line:594
+async def pdf_casa_trauma ():#line:595
+    O0O0O00OOO0O000O0 =request .args .get ('link2')#line:596
+    O00O0O000O00O00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:597
+    O00OOO0O00OOOO00O =await boton_pdf_video (1 ,"field_pdf",O0O0O00OOO0O000O0 )#line:598
+    return render_template ('pdf_casa_comercial.html',user_image7 =O00O0O000O00O00O0 ,titulos =O00OOO0O00OOOO00O )#line:599
+@app .route ("/videos_trauma",methods =['GET','POST'])#line:601
+async def videos_trauma ():#line:602
+    O0000000000O0OOOO =request .args .get ('link2')#line:603
+    OOO0O0O0OOO000OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:604
+    OOO00O00000OOOO00 =await boton_pdf_video (1 ,"field_video",O0000000000O0OOOO )#line:605
+    return render_template ('videos.html',user_image7 =OOO0O0O0OOO000OOO ,titulos =OOO00O00000OOOO00 )#line:606
+@app .route ("/materiales_trauma",methods =['GET','POST'])#line:608
+async def materiales_trauma ():#line:609
+    OOOOO0OO00000O00O =request .args .get ('link2')#line:610
+    OOO000O0OO000O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:611
+    O0000OOO0OO000OO0 =await boton_materiales (1 ,OOOOO0OO00000O00O )#line:612
+    if len (O0000OOO0OO000OO0 [''])==0 :#line:613
+       return render_template ('materiales.html',user_image7 =OOO000O0OO000O0OO ,cajas =O0000OOO0OO000OO0 ,no_hay ="No hay materiales")#line:614
+    return render_template ('materiales.html',user_image7 =OOO000O0OO000O0OO ,cajas =O0000OOO0OO000OO0 )#line:615
+@app .route ("/escuchar_trauma1",methods =['GET','POST'])#line:617
+async def escuchar_trauma1 ():#line:618
+    OOOO000OO00OOO00O =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:619
+    OOO00O00O000O0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:620
+    OO0OO0000O00OOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:621
+    OO00O00000OO0O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:622
+    O0O0O000O0O000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:623
+    O00OO00OO0OO00O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:624
+    O0OOO000OO0OO00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:625
+    OOOOOO0OO0O000O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:626
+    return render_template ('escuchar_trauma1.html',nid2 =0 ,prediction_text ="Dale a `Escuchar´ y haz tu pregunta",user_image5 =O00OO00OO0OO00O0O ,user_image6 =O0OOO000OO0OO00O0 ,user_image7 =OOOOOO0OO0O000O0O ,user_image8 =OO0OO0000O00OOOOO ,user_image9 =OO00O00000OO0O00O ,user_image10 =OOOO000OO00OOO00O ,user_image11 =O0O0O000O0O000OO0 ,user_image12 =OOO00O00O000O0OOO )#line:627
+@app .route ("/escuchar_trauma",methods =['GET','POST'])#line:629
+async def escuchar_trauma ():#line:630
+    OO00OOOOO00OO00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:631
+    O00OOOOOOO0000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:632
+    O00000OO00OO0OO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:633
+    OOOOO0OO00000000O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:634
+    OOOOOOOO0O0O0OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:635
+    OOO0O00O0OOO00O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:636
+    OO0OOOOOO0000000O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:637
+    OO0O0OO0O0O0OOOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:638
+    O0O0000OOOOOO00OO =takeCommand ()#line:639
+    O0O0000OOOOOO00OO =str (O0O0000OOOOOO00OO ).lower ()#line:640
+    O0O0000OOOOOO00OO =O0O0000OOOOOO00OO .split ()#line:641
+    OOO000OOO0OO0000O ={}#line:642
+    OOO000OOO0OO0000O [""]=""#line:643
+    if O0O0000OOOOOO00OO [0 ]!="none":#line:644
+        O0000O0O0O00OOO0O =1 #line:645
+        O0000000O00OO00O0 =await cargar_base_datos (O0O0000OOOOOO00OO ,O0000O0O0O00OOO0O )#line:646
+        O0O00OOO0O000O00O =await buscar_faq (O0O0000OOOOOO00OO ,0 )#line:647
+        if O0000000O00OO00O0 ==None :#line:648
+            if len (O0O00OOO0O000O00O )==0 :#line:649
+                return render_template ('escuchar_trauma.html',nid2 =0 ,result_busqueda =OOO000OOO0OO0000O ,prediction_text ="No hay resultados para tu busqueda",user_image6 =OO0OOOOOO0000000O ,user_image7 =OO0O0OO0O0O0OOOO0 ,user_image5 =OOO0O00O0OOO00O00 ,user_image8 =O00000OO00OO0OO00 ,user_image9 =OOOOO0OO00000000O ,user_image10 =OO00OOOOO00OO00O0 ,user_image11 =OOOOOOOO0O0O0OOOO ,user_image12 =O00OOOOOOO0000OO0 )#line:650
+            else :#line:651
+                return render_template ('escuchar_trauma.html',nid2 =0 ,faqs =O0O00OOO0O000O00O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OOO000OOO0OO0000O ,user_image6 =OO0OOOOOO0000000O ,user_image7 =OO0O0OO0O0O0OOOO0 ,user_image5 =OOO0O00O0OOO00O00 ,user_image8 =O00000OO00OO0OO00 ,user_image9 =OOOOO0OO00000000O ,user_image10 =OO00OOOOO00OO00O0 ,user_image11 =OOOOOOOO0O0O0OOOO ,user_image12 =O00OOOOOOO0000OO0 )#line:652
+        elif len (O0000000O00OO00O0 )>=1 :#line:653
+            OOOO0O000OOO00OOO =[]#line:654
+            O0O000O0O0OOO0OO0 =[]#line:655
+            OOO000OOO0OO0000O ={}#line:656
+            for O0O0OO0OOOO000OO0 in O0000000O00OO00O0 :#line:657
+                OOOO0O000OOO00OOO .append (O0O0OO0OOOO000OO0 ["title"])#line:658
+                O0O000O0O0OOO0OO0 .append (O0O0OO0OOOO000OO0 ["nid"])#line:659
+            for OOO00OOO00O0O0OO0 ,O0O0OO0OOOO000OO0 in enumerate (OOOO0O000OOO00OOO ):#line:660
+                 OOO000OOO0OO0000O [O0O000O0O0OOO0OO0 [OOO00OOO00O0O0OO0 ]]=O0O0OO0OOOO000OO0 #line:661
+            if len (O0O00OOO0O000O00O )==0 :#line:663
+                return render_template ('escuchar_trauma.html',nid2 =0 ,result_busqueda =OOO000OOO0OO0000O ,user_image6 =OO0OOOOOO0000000O ,user_image7 =OO0O0OO0O0O0OOOO0 ,user_image5 =OOO0O00O0OOO00O00 ,user_image8 =O00000OO00OO0OO00 ,user_image9 =OOOOO0OO00000000O ,user_image10 =OO00OOOOO00OO00O0 ,user_image11 =OOOOOOOO0O0O0OOOO ,user_image12 =O00OOOOOOO0000OO0 )#line:664
+            else :#line:665
+                return render_template ('escuchar_trauma.html',nid2 =0 ,faqs =O0O00OOO0O000O00O ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OOO000OOO0OO0000O ,user_image6 =OO0OOOOOO0000000O ,user_image7 =OO0O0OO0O0O0OOOO0 ,user_image5 =OOO0O00O0OOO00O00 ,user_image8 =O00000OO00OO0OO00 ,user_image9 =OOOOO0OO00000000O ,user_image10 =OO00OOOOO00OO00O0 ,user_image11 =OOOOOOOO0O0O0OOOO ,user_image12 =O00OOOOOOO0000OO0 )#line:666
+    else :#line:667
+        return render_template ('escuchar_trauma.html',nid2 =0 ,result_busqueda =OOO000OOO0OO0000O ,prediction_text ="No te he entendido bien, dale al boton `Escuchar´ y repite tu pregunta",user_image5 =OOO0O00O0OOO00O00 ,user_image6 =OO0OOOOOO0000000O ,user_image7 =OO0O0OO0O0O0OOOO0 ,user_image8 =O00000OO00OO0OO00 ,user_image9 =OOOOO0OO00000000O ,user_image10 =OO00OOOOO00OO00O0 ,user_image11 =OOOOOOOO0O0O0OOOO ,user_image12 =O00OOOOOOO0000OO0 )#line:668
+@app .route ("/buscador_admision",methods =['GET','POST'])#line:670
+async def buscador_admision ():#line:671
+    OO00O0O0O000O00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:672
+    O00O000O00OO0OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:673
+    O0OOO00OO000OOOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:674
+    OO0OO0OO00O0O0OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:675
+    OOOOO00OOOO0O0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'otros_img.png')#line:676
+    O00O000OO000OO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'programacion_img.png')#line:677
+    OOO0OOO0OOOOOO0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'ambulancias_img.jpg')#line:678
+    OO00OO0O0O0OOO0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'mapa_camas_img.jpg')#line:679
+    OOOOOOO0O0OOOOOOO =str (request .form .to_dict ())#line:680
+    OOOOOOO0O0OOOOOOO =adaptar_salida (OOOOOOO0O0OOOOOOO )#line:681
+    O0OO0O0OOO00OOO0O ={}#line:682
+    O0OO0O0OOO00OOO0O [""]=""#line:683
+    if len (OOOOOOO0O0OOOOOOO )==0 :#line:684
+        return render_template ('buscador_admision.html',user_image8 =OO00OO0O0O0OOO0O0 ,user_image9 =OOO0OOO0OOOOOO0OO ,user_image10 =O00O000OO000OO0OO ,user_image11 =OOOOO00OOOO0O0O00 ,result_busqueda =O0OO0O0OOO00OOO0O ,prediction_text ="ya puedes hacer tu pregunta",user_image4 =OO00O0O0O000O00OO ,user_image5 =O00O000O00OO0OOO0 ,user_image6 =O0OOO00OO000OOOO0 ,user_image7 =OO0OO0OO00O0O0OOO )#line:685
+    elif OOOOOOO0O0OOOOOOO !=None or "{}":#line:686
+        OOOOO0O00O0O0OO0O =1621 #line:687
+        OO00OO000O00O0O0O =await cargar_base_datos (OOOOOOO0O0OOOOOOO ,OOOOO0O00O0O0OO0O )#line:688
+        O00O00000000O00OO =await buscar_faq (OOOOOOO0O0OOOOOOO ,1 )#line:689
+        if OO00OO000O00O0O0O ==None :#line:690
+            if len (O00O00000000O00OO )==0 :#line:691
+                return render_template ('buscador_admision.html',user_image8 =OO00OO0O0O0OOO0O0 ,user_image9 =OOO0OOO0OOOOOO0OO ,user_image10 =O00O000OO000OO0OO ,user_image11 =OOOOO00OOOO0O0O00 ,result_busqueda =O0OO0O0OOO00OOO0O ,prediction_text ="No hay resultados para tu busqueda",user_image4 =OO00O0O0O000O00OO ,user_image5 =O00O000O00OO0OOO0 ,user_image6 =O0OOO00OO000OOOO0 ,user_image7 =OO0OO0OO00O0O0OOO )#line:692
+            else :#line:693
+                return render_template ('buscador_admision.html',user_image8 =OO00OO0O0O0OOO0O0 ,user_image9 =OOO0OOO0OOOOOO0OO ,user_image10 =O00O000OO000OO0OO ,user_image11 =OOOOO00OOOO0O0O00 ,faqs =O00O00000000O00OO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O0OO0O0OOO00OOO0O ,user_image4 =OO00O0O0O000O00OO ,user_image5 =O00O000O00OO0OOO0 ,user_image6 =O0OOO00OO000OOOO0 ,user_image7 =OO0OO0OO00O0O0OOO )#line:694
+        elif len (OO00OO000O00O0O0O )>=1 :#line:695
+            OOOO0OOO0O0O0O0OO =[]#line:696
+            OOOO000O00000OO0O =[]#line:697
+            O0OO0O0OOO00OOO0O ={}#line:698
+            for O00OOOOOOOOO00O0O in OO00OO000O00O0O0O :#line:699
+                OOOO000O00000OO0O .append (O00OOOOOOOOO00O0O ["nid"])#line:700
+                for O0O00OOOO00O00000 in OOOO000O00000OO0O :#line:701
+                    O000OO00OOO00O0O0 =aiohttp .TCPConnector (ssl =True )#line:702
+                    async with aiohttp .ClientSession (connector =O000OO00OOO00O0O0 )as OO00O000O0O0O000O :#line:703
+                        O000OO0O00OO0O00O =await OO00O000O0O0O000O .get ('https://orva.tedcas.com/api/intervenciones/'+str (O0O00OOOO00O00000 ),auth =auth )#line:704
+                        O0000OO00OO0OO000 =await O000OO0O00OO0O00O .json ()#line:705
+                        O0000OO00OO0OO000 =O0000OO00OO0OO000 [0 ]#line:706
+                        OO00000OO000OOOOO =O0000OO00OO0OO000 ['field_pdf']#line:707
+                        OO00000OO000OOOOO =OO00000OO000OOOOO [0 ]#line:708
+                        O0OO0O0OOO00OOO0O [O0000OO00OO0OO000 ['title']]="https://orva.tedcas.com/"+str (OO00000OO000OOOOO ['url'])#line:709
+            if len (O00O00000000O00OO )==0 :#line:710
+                return render_template ('buscador_admision.html',user_image8 =OO00OO0O0O0OOO0O0 ,user_image9 =OOO0OOO0OOOOOO0OO ,user_image10 =O00O000OO000OO0OO ,user_image11 =OOOOO00OOOO0O0O00 ,result_busqueda =O0OO0O0OOO00OOO0O ,user_image4 =OO00O0O0O000O00OO ,user_image5 =O00O000O00OO0OOO0 ,user_image6 =O0OOO00OO000OOOO0 ,user_image7 =OO0OO0OO00O0O0OOO )#line:711
+            else :#line:712
+                return render_template ('buscador_admision.html',faqs =O00O00000000O00OO ,faq_titulo ="Preguntas y respuestas: ",user_image8 =OO00OO0O0O0OOO0O0 ,user_image9 =OOO0OOO0OOOOOO0OO ,user_image10 =O00O000OO000OO0OO ,user_image11 =OOOOO00OOOO0O0O00 ,result_busqueda =O0OO0O0OOO00OOO0O ,user_image4 =OO00O0O0O000O00OO ,user_image5 =O00O000O00OO0OOO0 ,user_image6 =O0OOO00OO000OOOO0 ,user_image7 =OO0OO0OO00O0O0OOO )#line:713
+@app .route ("/mapa_camas",methods =['GET','POST'])#line:715
+async def mapa_camas ():#line:716
+    OOO00OOOO00OOOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:717
+    O00OOOOO000O00OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:718
+    OOOO0O0O00OOO0O00 ,OO00OOO000O0OOOOO ,O0OO00OO000O000O0 ,O0OOO0O0O00O00O0O =await cargar_botones_pdf_admision ()#line:719
+    return render_template ('mapa_camas.html',text =OOOO0O0O00OOO0O00 ,user_image6 =OOO00OOOO00OOOO00 ,user_image7 =O00OOOOO000O00OOO )#line:720
+@app .route ("/ambulancias",methods =['GET','POST'])#line:722
+async def ambulancias ():#line:723
+    OO0O00O0OOOOO000O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:724
+    O0O0OO00O0O0O000O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:725
+    O0O00O0000OOOOOO0 ,O00OO00OOO0000O0O ,O0OOO0OO0OOOO00OO ,OOOOO0000OO00000O =await cargar_botones_pdf_admision ()#line:726
+    return render_template ('ambulancias.html',text =O00OO00OOO0000O0O ,user_image6 =OO0O00O0OOOOO000O ,user_image7 =O0O0OO00O0O0O000O )#line:727
+@app .route ("/programacion_quirurgica",methods =['GET','POST'])#line:729
+async def programacion_quirurgica ():#line:730
+    OOOO000000O000000 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:731
+    O0OOOOO00O000O0OO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:732
+    O000OOOOOO0OOOOO0 ,O0O00OOO000O00O00 ,O00OOOOO00OOO0O00 ,OO0O0OO0O0OOO0OO0 =await cargar_botones_pdf_admision ()#line:733
+    return render_template ('programacion_quirurgica.html',text =O00OOOOO00OOO0O00 ,user_image6 =OOOO000000O000000 ,user_image7 =O0OOOOO00O000O0OO )#line:734
+@app .route ("/otros",methods =['GET','POST'])#line:736
+async def otros ():#line:737
+    OO0O0000O00OO0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:738
+    O0OOOO000O0OO000O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:739
+    OO00OOO0O0OO00OO0 ,OO00OOOO000OO0OOO ,O0OO00O0000OOOO00 ,OOOO0000O0O0OO0O0 =await cargar_botones_pdf_admision ()#line:740
+    return render_template ('otros.html',text =OOOO0000O0O0OO0O0 ,user_image6 =OO0O0000O00OO0O0O ,user_image7 =O0OOOO000O0OO000O )#line:741
+@app .route ("/escuchar_admision1",methods =['GET','POST'])#line:743
+async def escuchar_admision1 ():#line:744
+    O000OO000OO00OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'otros_img.png')#line:745
+    OOO0000OO0OO00OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'programacion_img.png')#line:746
+    OO000O00OOO0000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ambulancias_img.jpg')#line:747
+    OOOOO000OOO0OO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'mapa_camas_img.jpg')#line:748
+    O0O0OOO000OO00OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:749
+    OO000OOOOOO00OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:750
+    OO000OOOOOOOOOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:751
+    return render_template ('escuchar_admision1.html',user_image8 =OOOOO000OOO0OO000 ,user_image9 =OO000O00OOO0000O0 ,user_image10 =OOO0000OO0OO00OO0 ,user_image11 =O000OO000OO00OOOO ,prediction_text ="Dale a `Escuchar´ y haz tu pregunta",user_image5 =O0O0OOO000OO00OO0 ,user_image6 =OO000OOOOOO00OOO0 ,user_image7 =OO000OOOOOOOOOO0O )#line:752
+@app .route ("/escuchar_admision",methods =['GET','POST'])#line:754
+async def escuchar_admision ():#line:755
+    OO0O0O00O0000O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'otros_img.png')#line:756
+    O0O0O0OOOO00OO0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'programacion_img.png')#line:757
+    OO00O0O00O0OOOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'ambulancias_img.jpg')#line:758
+    OO0OOOOOO000OOOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'mapa_camas_img.jpg')#line:759
+    OOO000O0000O00O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:760
+    OOOO0OOO0OO00000O =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:761
+    O000O0OOO00O0O00O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:762
+    OOOOO00OOO0000O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:763
+    O000O00OO0O000OOO =takeCommand ()#line:764
+    O000O00OO0O000OOO =str (O000O00OO0O000OOO ).lower ()#line:765
+    O000O00OO0O000OOO =O000O00OO0O000OOO .split ()#line:766
+    OOOOO0OOO000OO00O ={}#line:767
+    OOOOO0OOO000OO00O [""]=""#line:768
+    if O000O00OO0O000OOO [0 ]!="none":#line:769
+        O00OO0OO0000OO0OO =1621 #line:770
+        O00OOOO0000O0000O =await cargar_base_datos (O000O00OO0O000OOO ,O00OO0OO0000OO0OO )#line:771
+        OOO000O00O0OOOO00 =await buscar_faq (O000O00OO0O000OOO ,0 )#line:772
+        if O00OOOO0000O0000O ==None :#line:773
+            if len (OOO000O00O0OOOO00 )==0 :#line:774
+                return render_template ('escuchar_admision.html',user_image8 =OO0OOOOOO000OOOO0 ,user_image9 =OO00O0O00O0OOOO0O ,user_image10 =O0O0O0OOOO00OO0O0 ,user_image11 =OO0O0O00O0000O00O ,result_busqueda =OOOOO0OOO000OO00O ,prediction_text ="No hay resultados para tu busqueda",user_image4 =OOO000O0000O00O0O ,user_image5 =OOOO0OOO0OO00000O ,user_image6 =O000O0OOO00O0O00O ,user_image7 =OOOOO00OOO0000O0O )#line:775
+            else :#line:776
+                return render_template ('escuchar_admision.html',faqs =OOO000O00O0OOOO00 ,faq_titulo ="Preguntas y respuestas: ",user_image8 =OO0OOOOOO000OOOO0 ,user_image9 =OO00O0O00O0OOOO0O ,user_image10 =O0O0O0OOOO00OO0O0 ,user_image11 =OO0O0O00O0000O00O ,result_busqueda =OOOOO0OOO000OO00O ,user_image4 =OOO000O0000O00O0O ,user_image5 =OOOO0OOO0OO00000O ,user_image6 =O000O0OOO00O0O00O ,user_image7 =OOOOO00OOO0000O0O )#line:777
+        elif len (O00OOOO0000O0000O )>=1 :#line:778
+            OO0OOO0OO0O00O0O0 =[]#line:779
+            OOO00O00OO0O00O0O =[]#line:780
+            OOOOO0OOO000OO00O ={}#line:781
+            for O000O0OO0OOOOO0O0 in O00OOOO0000O0000O :#line:782
+                OOO00O00OO0O00O0O .append (O000O0OO0OOOOO0O0 ["nid"])#line:783
+                for OOO00O0OO0OOOOOO0 in OOO00O00OO0O00O0O :#line:784
+                    O0OOOOO0O00OOO0O0 =aiohttp .TCPConnector (ssl =True )#line:785
+                    async with aiohttp .ClientSession (connector =O0OOOOO0O00OOO0O0 )as OOOOO000O0OO0000O :#line:786
+                        OO0000000O0000O0O =await OOOOO000O0OO0000O .get ('https://orva.tedcas.com/api/intervenciones/'+str (OOO00O0OO0OOOOOO0 ),auth =auth )#line:787
+                        OOOO0OOOO0OO00OOO =await OO0000000O0000O0O .json ()#line:788
+                        OOOO0OOOO0OO00OOO =OOOO0OOOO0OO00OOO [0 ]#line:789
+                        OO0000O00OO0O0O0O =OOOO0OOOO0OO00OOO ['field_pdf']#line:790
+                        OO0000O00OO0O0O0O =OO0000O00OO0O0O0O [0 ]#line:791
+                        OOOOO0OOO000OO00O [OOOO0OOOO0OO00OOO ['title']]="https://orva.tedcas.com/"+str (OO0000O00OO0O0O0O ['url'])#line:792
+            if len (OOO000O00O0OOOO00 )==0 :#line:793
+                return render_template ('escuchar_admision.html',user_image8 =OO0OOOOOO000OOOO0 ,user_image9 =OO00O0O00O0OOOO0O ,user_image10 =O0O0O0OOOO00OO0O0 ,user_image11 =OO0O0O00O0000O00O ,result_busqueda =OOOOO0OOO000OO00O ,user_image4 =OOO000O0000O00O0O ,user_image5 =OOOO0OOO0OO00000O ,user_image6 =O000O0OOO00O0O00O ,user_image7 =OOOOO00OOO0000O0O )#line:794
+            else :#line:795
+                return render_template ('escuchar_admision.html',faqs =OOO000O00O0OOOO00 ,faq_titulo ="Preguntas y respuestas: ",user_image8 =OO0OOOOOO000OOOO0 ,user_image9 =OO00O0O00O0OOOO0O ,user_image10 =O0O0O0OOOO00OO0O0 ,user_image11 =OO0O0O00O0000O00O ,result_busqueda =OOOOO0OOO000OO00O ,user_image4 =OOO000O0000O00O0O ,user_image5 =OOOO0OOO0OO00000O ,user_image6 =O000O0OOO00O0O00O ,user_image7 =OOOOO00OOO0000O0O )#line:796
+    else :#line:797
+        return render_template ('escuchar_admision.html',user_image8 =OO0OOOOOO000OOOO0 ,user_image9 =OO00O0O00O0OOOO0O ,user_image10 =O0O0O0OOOO00OO0O0 ,user_image11 =OO0O0O00O0000O00O ,prediction_text ="No te he entendido bien, dale al boton `Escuchar´ y repite tu pregunta",result_busqueda =OOOOO0OOO000OO00O ,user_image4 =OOO000O0000O00O0O ,user_image5 =OOOO0OOO0OO00000O ,user_image6 =O000O0OOO00O0O00O ,user_image7 =OOOOO00OOO0000O0O )#line:798
+@app .route ("/buscador_uro",methods =['GET','POST'])#line:800
+async def buscador_uro ():#line:801
+    O00OO0OO000OOO000 =os .path .join (app .config ['UPLOAD_FOLDER'],'lupa.png')#line:802
+    O0OO0OOO00OO0000O =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:803
+    OOOOO0O00OOOOOO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:804
+    O000O0OOOOO00OOO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:805
+    OOOO0O0O00O0OOOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:806
+    OOO00O00OO0OO0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:807
+    O0OOOOO0OOOO00OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:808
+    OO00OOO00O00O0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:809
+    O00OO0000O00OOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:810
+    OOOO0OO00O00OO0O0 =str (request .form .to_dict ())#line:811
+    OOOO0OO00O00OO0O0 =adaptar_salida (OOOO0OO00O00OO0O0 )#line:812
+    O00OO0O00OOO0OOO0 ={}#line:813
+    O00OO0O00OOO0OOO0 [""]=""#line:814
+    if len (OOOO0OO00O00OO0O0 )==0 :#line:815
+        return render_template ('buscador_uro.html',result_busqueda =O00OO0O00OOO0OOO0 ,user_image4 =O00OO0OO000OOO000 ,user_image5 =O0OO0OOO00OO0000O ,user_image6 =OOOOO0O00OOOOOO00 ,user_image7 =O000O0OOOOO00OOO0 ,user_image8 =O0OOOOO0OOOO00OOO ,user_image9 =OO00OOO00O00O0O0O ,user_image10 =OOOO0O0O00O0OOOOO ,user_image11 =O00OO0000O00OOO0O ,user_image12 =OOO00O00OO0OO0O00 ,nid2 =0 )#line:816
+    elif OOOO0OO00O00OO0O0 !=None or "{}":#line:817
+        O00OOO0OOOOOO0O0O =1620 #line:818
+        O00OO0000OO0OOO0O =await cargar_base_datos (OOOO0OO00O00OO0O0 ,O00OOO0OOOOOO0O0O )#line:819
+        O0OO0OO0OO00OO0OO =await buscar_faq (OOOO0OO00O00OO0O0 ,1 )#line:820
+        if O00OO0000OO0OOO0O ==None :#line:821
+            if len (O0OO0OO0OO00OO0OO )==0 :#line:822
+                return render_template ('buscador_uro.html',result_busqueda =O00OO0O00OOO0OOO0 ,prediction_text ="No hay resultados para tu busqueda",user_image4 =O00OO0OO000OOO000 ,user_image5 =O0OO0OOO00OO0000O ,user_image6 =OOOOO0O00OOOOOO00 ,user_image7 =O000O0OOOOO00OOO0 ,user_image8 =O0OOOOO0OOOO00OOO ,user_image9 =OO00OOO00O00O0O0O ,user_image10 =OOOO0O0O00O0OOOOO ,user_image11 =O00OO0000O00OOO0O ,user_image12 =OOO00O00OO0OO0O00 ,nid2 =0 )#line:823
+            else :#line:824
+                 return render_template ('buscador_uro.html',faqs =O0OO0OO0OO00OO0OO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O00OO0O00OOO0OOO0 ,user_image4 =O00OO0OO000OOO000 ,user_image5 =O0OO0OOO00OO0000O ,user_image6 =OOOOO0O00OOOOOO00 ,user_image7 =O000O0OOOOO00OOO0 ,user_image8 =O0OOOOO0OOOO00OOO ,user_image9 =OO00OOO00O00O0O0O ,user_image10 =OOOO0O0O00O0OOOOO ,user_image11 =O00OO0000O00OOO0O ,user_image12 =OOO00O00OO0OO0O00 ,nid2 =0 )#line:825
+        elif len (O00OO0000OO0OOO0O )>=1 :#line:826
+            O0OOOOOO0OO0000O0 =[]#line:827
+            OOOOOOOOOOOO0O0OO =[]#line:828
+            O00OO0O00OOO0OOO0 ={}#line:829
+            for OOOOOOOO0O0OOOOO0 in O00OO0000OO0OOO0O :#line:830
+                O0OOOOOO0OO0000O0 .append (OOOOOOOO0O0OOOOO0 ["title"])#line:831
+                OOOOOOOOOOOO0O0OO .append (OOOOOOOO0O0OOOOO0 ["nid"])#line:832
+            for O0OO0OO0O0O000O00 ,OOOOOOOO0O0OOOOO0 in enumerate (O0OOOOOO0OO0000O0 ):#line:833
+                 O00OO0O00OOO0OOO0 [OOOOOOOOOOOO0O0OO [O0OO0OO0O0O000O00 ]]=OOOOOOOO0O0OOOOO0 #line:834
+            if len (O0OO0OO0OO00OO0OO )!=0 :#line:835
+                return render_template ('buscador_uro.html',faqs =O0OO0OO0OO00OO0OO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =O00OO0O00OOO0OOO0 ,user_image4 =O00OO0OO000OOO000 ,user_image5 =O0OO0OOO00OO0000O ,user_image6 =OOOOO0O00OOOOOO00 ,user_image7 =O000O0OOOOO00OOO0 ,user_image8 =O0OOOOO0OOOO00OOO ,user_image9 =OO00OOO00O00O0O0O ,user_image10 =OOOO0O0O00O0OOOOO ,user_image11 =O00OO0000O00OOO0O ,user_image12 =OOO00O00OO0OO0O00 ,nid2 =0 )#line:836
+            else :#line:837
+                return render_template ('buscador_uro.html',result_busqueda =O00OO0O00OOO0OOO0 ,user_image4 =O00OO0OO000OOO000 ,user_image5 =O0OO0OOO00OO0000O ,user_image6 =OOOOO0O00OOOOOO00 ,user_image7 =O000O0OOOOO00OOO0 ,user_image8 =O0OOOOO0OOOO00OOO ,user_image9 =OO00OOO00O00O0O0O ,user_image10 =OOOO0O0O00O0OOOOO ,user_image11 =O00OO0000O00OOO0O ,user_image12 =OOO00O00OO0OO0O00 ,nid2 =0 )#line:838
+@app .route ("/resultado_uro",methods =['GET','POST'])#line:840
+async def resultado_uro ():#line:841
+    O0OOOO00O0OOO0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:842
+    OO0OO00OO0OOO000O =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:843
+    OO00O00OO00O000OO =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:844
+    O0OO0O00OOOOOOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:845
+    O0OOO0O00O0OO0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:846
+    OOO0000O00O0O0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:847
+    O0OO0000O0O000000 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:848
+    OO000000O0OO000O0 =request .args .get ('link')#line:849
+    O0OOOOOOO0000OO00 ,O00O0O00OOO0OO000 =await cargar_tipo (OO000000O0OO000O0 ,1620 )#line:850
+    OOOO0OO0OOOOOO0OO =O0OOOOOOO0000OO00 ['title']#line:851
+    if O00O0O00OOO0OO000 =="Intervencion":#line:852
+        print ("hola1")#line:853
+        O0OO000OO0O0O0OOO ,OOO0OO0000O0OOO00 =await cargar_caja (str (OO000000O0OO000O0 ),'Materiales - Cajas: ')#line:854
+        return render_template ('intervencion_uro.html',user_image8 =O0OOO0O00O0OO0O0O ,user_image9 =OOO0000O00O0O0O0O ,user_image10 =OO00O00OO00O000OO ,user_image11 =O0OO0000O0O000000 ,user_image12 =O0OO0O00OOOOOOO0O ,instrumental =O0OO000OO0O0O0OOO ,texto_cajas =OOO0OO0000O0OOO00 ,title =OOOO0OO0OOOOOO0OO ,user_image6 =O0OOOO00O0OOO0OO0 ,user_image7 =OO0OO00OO0OOO000O ,nid2 =OO000000O0OO000O0 )#line:855
+    elif O00O0O00OOO0OO000 =='Caja':#line:856
+        OO00OO0O0OOOO00O0 ,O0O00OOO00O0OOO0O ,O0O00000O0OO0O0O0 =await cargar_archivo ("ubicacion","Ubicacion: ","cajas/"+str (OO000000O0OO000O0 ))#line:857
+        OOO0OOO000OO0O0O0 =await cargar_archivo ("image","Imagen: ","cajas/"+str (OO000000O0OO000O0 ))#line:858
+        OO0OO0OOO0000O00O ,OOO0O000O0O0O000O =await cargar_archivo_grande ("title_material","Material : ","cajas/"+str (OO000000O0OO000O0 ))#line:859
+        return render_template ('caja_trauma.html',title =OOOO0OO0OOOOOO0OO ,files_instru =OO0OO0OOO0000O00O ,texto_instru =OOO0O000O0O0O000O ,texto_ubi =OO00OO0O0OOOO00O0 ,file_texto_ubi =O0O00000O0OO0O0O0 ,file_imagen =OOO0OOO000OO0O0O0 ,user_image6 =O0OOOO00O0OOO0OO0 ,user_image7 =OO0OO00OO0OOO000O )#line:860
+    elif O00O0O00OOO0OO000 =='Instrumental':#line:861
+        print ("hola2")#line:862
+        OOO00OO00000OO000 =await cargar_instrumental (OO000000O0OO000O0 ,'listado_completo_cajas/1620')#line:863
+        return render_template ('instrumental_uro.html',cajas =OOO00OO00000OO000 ,texto ='El instrumental que buscas esta presente en las siguientes cajas: ',title =OOOO0OO0OOOOOO0OO ,user_image6 =O0OOOO00O0OOO0OO0 ,user_image7 =OO0OO00OO0OOO000O )#line:864
+@app .route ("/protocolos_uro",methods =['GET','POST'])#line:866
+async def protocolos_uro ():#line:867
+    O0OO0O0OOO0OOOO00 =request .args .get ('link2')#line:868
+    OO0OOO0O0OOOO0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:869
+    OOO0O00O000OOOO00 =await boton_word_ppt (1620 ,"field_protocolo",O0OO0O0OOO0OOOO00 )#line:870
+    return render_template ('protocolo.html',protocolos =OOO0O00O000OOOO00 ,user_image7 =OO0OOO0O0OOOO0O00 )#line:871
+@app .route ("/guia_visual_uro",methods =['GET','POST'])#line:873
+async def guia_visual_uro ():#line:874
+    OO0OOOOOOO0OO000O =request .args .get ('link2')#line:875
+    O0OO0O00O00OO00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:876
+    O0OOO0OOO00O00O00 =await boton_word_ppt (1620 ,"field_guia_visual",OO0OOOOOOO0OO000O )#line:877
+    return render_template ('guia_visual.html',guia_visual =O0OOO0OOO00O00O00 ,user_image7 =O0OO0O00O00OO00OO )#line:878
+@app .route ("/pdf_casa_uro",methods =['GET','POST'])#line:880
+async def pdf_casa_uro ():#line:881
+    O00O0OO000OO0000O =request .args .get ('link2')#line:882
+    OO00O0OOO00000OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:883
+    OO00000O000OOOO00 =await boton_pdf_video (1620 ,"field_pdf",O00O0OO000OO0000O )#line:884
+    return render_template ('pdf_casa_comercial.html',user_image7 =OO00O0OOO00000OO0 ,titulos =OO00000O000OOOO00 )#line:885
+@app .route ("/videos_uro",methods =['GET','POST'])#line:887
+async def videos_uro ():#line:888
+    OO00O0OOO00OO0OOO =request .args .get ('link2')#line:889
+    O0OO0OO0O0OOO00O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:890
+    O000O00000OOO0OOO =await boton_pdf_video (1620 ,"field_video",OO00O0OOO00OO0OOO )#line:891
+    return render_template ('videos.html',user_image7 =O0OO0OO0O0OOO00O0 ,titulos =O000O00000OOO0OOO )#line:892
+@app .route ("/materiales_uro",methods =['GET','POST'])#line:894
+async def materiales_uro ():#line:895
+    O000OO0OO0OOO0O00 =request .args .get ('link2')#line:896
+    OOOOO0OO000O0OOOO =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:897
+    O000O0O0O0000O0OO =await boton_materiales (1620 ,O000OO0OO0OOO0O00 )#line:898
+    if len (O000O0O0O0000O0OO [''])==0 :#line:899
+       return render_template ('materiales_uro.html',user_image7 =OOOOO0OO000O0OOOO ,cajas =O000O0O0O0000O0OO ,no_hay ="No hay materiales")#line:900
+    return render_template ('materiales_uro.html',user_image7 =OOOOO0OO000O0OOOO ,cajas =O000O0O0O0000O0OO )#line:901
+@app .route ("/escuchar_uro1",methods =['GET','POST'])#line:903
+async def escuchar_uro1 ():#line:904
+    O0OOO0OOO0O000000 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:905
+    OO0OO00O00O000OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:906
+    OO00O0OOO00OO0000 =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:907
+    OO0O0OOOO000O0O0O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:908
+    O000O00OO0OOO0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:909
+    O00O00OOOOO0O0OO0 =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:910
+    O0OO00O0OO00O000O =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:911
+    O00OO0O000OOO0O00 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:912
+    return render_template ('escuchar_uro1.html',nid2 =0 ,prediction_text ="Dale a `Escuchar´ y haz tu pregunta",user_image5 =O00O00OOOOO0O0OO0 ,user_image6 =O0OO00O0OO00O000O ,user_image7 =O00OO0O000OOO0O00 ,user_image8 =OO00O0OOO00OO0000 ,user_image9 =OO0O0OOOO000O0O0O ,user_image10 =O0OOO0OOO0O000000 ,user_image11 =O000O00OO0OOO0O00 ,user_image12 =OO0OO00O00O000OOO )#line:913
+@app .route ("/escuchar_uro",methods =['GET','POST'])#line:915
+async def escuchar_uro ():#line:916
+    O0OOOOOOOO00000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'guia_visual.png')#line:917
+    O0000O000O0O000O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'materiales.png')#line:918
+    O0O000OO00000OO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'pdf_casa.jpg')#line:919
+    OOO00000OOO00000O =os .path .join (app .config ['UPLOAD_FOLDER'],'protocolo.jpg')#line:920
+    O0O00O0000OOOOO0O =os .path .join (app .config ['UPLOAD_FOLDER'],'visualizar_video.png')#line:921
+    O0O0OO000OO000OOO =os .path .join (app .config ['UPLOAD_FOLDER'],'micro.png')#line:922
+    OO000O0O00O0O00OO =os .path .join (app .config ['UPLOAD_FOLDER'],'ajustes.png')#line:923
+    O00OOO0O0O000O0O0 =os .path .join (app .config ['UPLOAD_FOLDER'],'flecha.png')#line:924
+    O0O0OOOOO00O0OO00 =takeCommand ()#line:925
+    O0O0OOOOO00O0OO00 =str (O0O0OOOOO00O0OO00 ).lower ()#line:926
+    O0O0OOOOO00O0OO00 =O0O0OOOOO00O0OO00 .split ()#line:927
+    OO0O000O000O0OOOO ={}#line:928
+    OO0O000O000O0OOOO [""]=""#line:929
+    if O0O0OOOOO00O0OO00 [0 ]!="none":#line:930
+        O000OOO0OO0O0O000 =1620 #line:931
+        O00OO00O000O0OOO0 =await cargar_base_datos (O0O0OOOOO00O0OO00 ,O000OOO0OO0O0O000 )#line:932
+        O00O0O0OO00000OOO =await buscar_faq (O0O0OOOOO00O0OO00 ,0 )#line:933
+        if O00OO00O000O0OOO0 ==None :#line:934
+            if len (O00O0O0OO00000OOO )==0 :#line:935
+                return render_template ('escuchar_uro.html',nid2 =0 ,result_busqueda =OO0O000O000O0OOOO ,prediction_text ="No hay resultados para tu busqueda",user_image6 =OO000O0O00O0O00OO ,user_image7 =O00OOO0O0O000O0O0 ,user_image5 =O0O0OO000OO000OOO ,user_image8 =O0O000OO00000OO0O ,user_image9 =OOO00000OOO00000O ,user_image10 =O0OOOOOOOO00000O0 ,user_image11 =O0O00O0000OOOOO0O ,user_image12 =O0000O000O0O000O0 )#line:936
+            else :#line:937
+                return render_template ('escuchar_uro.html',nid2 =0 ,faqs =O00O0O0OO00000OOO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OO0O000O000O0OOOO ,user_image6 =OO000O0O00O0O00OO ,user_image7 =O00OOO0O0O000O0O0 ,user_image5 =O0O0OO000OO000OOO ,user_image8 =O0O000OO00000OO0O ,user_image9 =OOO00000OOO00000O ,user_image10 =O0OOOOOOOO00000O0 ,user_image11 =O0O00O0000OOOOO0O ,user_image12 =O0000O000O0O000O0 )#line:938
+        elif len (O00OO00O000O0OOO0 )>=1 :#line:939
+            O0OOOO00000O0OO00 =[]#line:940
+            OO0OOOOOOO00O00O0 =[]#line:941
+            OO0O000O000O0OOOO ={}#line:942
+            for O00O0OOO0O0OOO0O0 in O00OO00O000O0OOO0 :#line:943
+                O0OOOO00000O0OO00 .append (O00O0OOO0O0OOO0O0 ["title"])#line:944
+                OO0OOOOOOO00O00O0 .append (O00O0OOO0O0OOO0O0 ["nid"])#line:945
+            for O0O0000O00000OO00 ,O00O0OOO0O0OOO0O0 in enumerate (O0OOOO00000O0OO00 ):#line:946
+                 OO0O000O000O0OOOO [OO0OOOOOOO00O00O0 [O0O0000O00000OO00 ]]=O00O0OOO0O0OOO0O0 #line:947
+            if len (O00O0O0OO00000OOO )==0 :#line:949
+                return render_template ('escuchar_uro.html',nid2 =0 ,result_busqueda =OO0O000O000O0OOOO ,user_image6 =OO000O0O00O0O00OO ,user_image7 =O00OOO0O0O000O0O0 ,user_image5 =O0O0OO000OO000OOO ,user_image8 =O0O000OO00000OO0O ,user_image9 =OOO00000OOO00000O ,user_image10 =O0OOOOOOOO00000O0 ,user_image11 =O0O00O0000OOOOO0O ,user_image12 =O0000O000O0O000O0 )#line:950
+            else :#line:951
+                return render_template ('escuchar_uro.html',nid2 =0 ,faqs =O00O0O0OO00000OOO ,faq_titulo ="Preguntas y respuestas: ",result_busqueda =OO0O000O000O0OOOO ,user_image6 =OO000O0O00O0O00OO ,user_image7 =O00OOO0O0O000O0O0 ,user_image5 =O0O0OO000OO000OOO ,user_image8 =O0O000OO00000OO0O ,user_image9 =OOO00000OOO00000O ,user_image10 =O0OOOOOOOO00000O0 ,user_image11 =O0O00O0000OOOOO0O ,user_image12 =O0000O000O0O000O0 )#line:952
+    else :#line:953
+        return render_template ('escuchar_uro.html',nid2 =0 ,result_busqueda =OO0O000O000O0OOOO ,prediction_text ="No te he entendido bien, dale al boton `Escuchar´ y repite tu pregunta",user_image5 =O0O0OO000OO000OOO ,user_image6 =OO000O0O00O0O00OO ,user_image7 =O00OOO0O0O000O0O0 ,user_image8 =O0O000OO00000OO0O ,user_image9 =OOO00000OOO00000O ,user_image10 =O0OOOOOOOO00000O0 ,user_image11 =O0O00O0000OOOOO0O ,user_image12 =O0000O000O0O000O0 )#line:954
+@app .route ("/ajustes")#line:956
+async def ajustes ():#line:957
+    O00O0OO0OOO00OO00 =os .path .join (app .config ['UPLOAD_FOLDER'],'estrella.png')#line:958
+    return render_template ('ajustes.html',user_image7 =O00O0OO0OOO00OO00 )#line:959
+if __name__ =="__main__":#line:961
+    app .run ()#line:962
